@@ -10,207 +10,399 @@
   <meta property="og:description" content="Founder of Middle Seat. Building tools for Democratic campaigns and teaching my kids to do the same.">
   <link rel="icon" type="image/png" href="/kids-training/favicon.png">
   <link rel="apple-touch-icon" href="/kids-training/favicon.png">
-  <link rel="stylesheet" href="https://use.typekit.net/wjc3fcc.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --dark:       #1A171E;
-      --dark-mid:   #222028;
-      --slate:      #4D4759;
-      --lav-1:      #F6F4FA;
-      --lav-2:      #EAE6F2;
-      --lav-5:      #9891A6;
-      --lav-7:      #655F73;
-      --cantaloupe: #F2A26D;
-      --pistachio:  #74A686;
-      --blueberry:  #6B7FD7;
-      --white:      #FFFFFF;
-      --dim:        rgba(255,255,255,0.78);
-      --dimmer:     rgba(255,255,255,0.5);
+      --bg:         #1a1a1a;
+      --surface:    #242424;
+      --surface-2:  #2c2c2c;
+      --surface-3:  #353535;
+      --border:     rgba(255,255,255,0.09);
+      --border-2:   rgba(255,255,255,0.16);
+      --text:       #f0ede8;
+      --text-dim:   #888888;
+      --accent:     #E8401C;
+      --accent-dim: rgba(232,64,28,0.12);
+      --green:      #4abe88;
+      --green-dim:  rgba(74,190,136,0.12);
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      background: var(--dark);
-      color: var(--white);
-      font-family: 'inter', 'Inter', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-    }
-
-    a { color: var(--cantaloupe); text-decoration: none; transition: opacity 0.2s; }
-    a:hover { opacity: 0.75; }
-
-    .wrap {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 96px 32px 80px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .glow {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .glow-1 {
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(155,145,166,0.22) 0%, transparent 70%);
-      top: -200px; right: -150px;
-    }
-    .glow-2 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(242,162,109,0.12) 0%, transparent 70%);
-      bottom: -120px; left: -120px;
-    }
-    .monogram {
-      position: fixed;
-      top: -0.08em;
-      left: -0.04em;
-      font-family: 'cardo','Cardo',serif;
-      font-size: clamp(180px, 28vw, 360px);
-      font-weight: 700;
-      color: rgba(155,145,166,0.07);
-      line-height: 1;
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-    }
-
-    .eyebrow {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--cantaloupe);
-      margin-bottom: 22px;
-      display: block;
-    }
-
-    h1 {
-      font-family: 'cardo','Cardo',Georgia,serif;
-      font-size: clamp(54px, 9vw, 96px);
-      font-weight: 700;
-      line-height: 0.95;
-      letter-spacing: -0.025em;
-      margin-bottom: 28px;
-    }
-
-    .rule {
-      width: 56px;
-      height: 3px;
-      background: var(--cantaloupe);
-      margin: 28px 0;
-    }
-
-    p.lede {
-      font-size: clamp(17px, 1.7vw, 22px);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
       line-height: 1.55;
-      color: var(--dim);
-      max-width: 560px;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; transition: opacity 0.15s; }
+    a:hover { opacity: 0.8; }
+
+    .scroll-bar {
+      position: fixed; top: 0; left: 0; z-index: 1001;
+      height: 2px; background: var(--accent);
+      width: 0%; transition: width 0.06s linear;
+      pointer-events: none;
     }
 
-    p.lede + p.lede { margin-top: 18px; }
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
 
-    h2 {
-      font-family: 'cardo','Cardo',Georgia,serif;
-      font-size: 22px;
-      font-weight: 700;
+    /* Site header */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text);
+    }
+    .site-header-logo span { color: var(--accent); }
+    .site-header-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim); letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+      min-height: 440px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-left {
+      background: var(--accent);
+      padding: 3rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      position: relative;
+    }
+    .hero-left::before {
+      content: "HECTOR SIGALA\00000ABUILDER\00000ALOS ANGELES";
+      position: absolute; top: 1.5rem; left: 2.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: rgba(0,0,0,0.45); letter-spacing: 0.08em;
+      white-space: pre; line-height: 1.65;
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3.4rem, 7vw, 5.6rem);
+      font-weight: 900;
+      color: #0a0a0a;
       letter-spacing: -0.01em;
-      margin-bottom: 18px;
-      margin-top: 64px;
+      line-height: 0.88;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
     }
-
-    .links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .links a {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 18px 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: var(--white);
-    }
-    .links li:last-child a { border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .links a:hover {
-      opacity: 1;
-      color: var(--cantaloupe);
-    }
-    .link-title {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .link-note {
-      font-size: 13px;
-      color: var(--dimmer);
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .links a:hover .link-note { color: var(--cantaloupe); opacity: 0.8; }
-
-    .footer {
-      margin-top: 80px;
-      font-size: 12px;
-      color: var(--dimmer);
+    .hero h1 .slash { color: rgba(0,0,0,0.35); font-weight: 800; }
+    .hero .hero-sub {
+      color: rgba(0,0,0,0.65);
+      font-size: 0.85rem;
+      font-weight: 600;
       letter-spacing: 0.06em;
+      text-transform: uppercase;
+      max-width: 380px;
+      line-height: 1.45;
+    }
+    .hero-right {
+      background: #111;
+      padding: 2.2rem 2.2rem 1.8rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .hero-right-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .hero-quote {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+      font-weight: 700; line-height: 1.15;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.005em;
+    }
+    .hero-quote em { color: var(--accent); font-style: normal; }
+    .hero-stats {
+      display: flex; gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat {
+      flex: 1; padding: 0.85rem 0.9rem;
+      border-right: 1px solid var(--border);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat .hs-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-dim);
+    }
+    .hero-stat .hs-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem; font-weight: 800; color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.02em;
+      margin-top: 0.15rem;
     }
 
-    @media (max-width: 580px) {
-      .wrap { padding: 64px 22px 60px; }
-      .link-title { font-size: 15px; }
-      .link-note { font-size: 12px; }
+    /* Chapter */
+    .chapter {
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+    .chapter:first-of-type { border-top: none; }
+    .chapter-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 2rem;
+      padding: 3rem 0 1.4rem;
+      position: relative; overflow: hidden;
+    }
+    .chapter-header-inner { flex: 1; }
+    .chapter-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--accent); margin-bottom: 0.4rem;
+    }
+    .chapter-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+      font-weight: 800; color: var(--text);
+      letter-spacing: 0.01em; line-height: 1;
+      text-transform: uppercase;
+    }
+    .chapter-subtitle {
+      font-size: 0.92rem; color: var(--text-dim);
+      margin-top: 0.55rem;
+      max-width: 600px; line-height: 1.55;
+    }
+    .ch-bg-num {
+      position: absolute; right: -0.5rem; top: 50%; transform: translateY(-50%);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(7rem, 14vw, 10rem); font-weight: 900;
+      color: rgba(255,255,255,0.04); line-height: 1;
+      user-select: none; pointer-events: none; letter-spacing: -0.02em;
+    }
+
+    /* Project list */
+    .proj-list {
+      list-style: none;
+      border-top: 1px solid var(--border);
+    }
+    .proj-list li { border-bottom: 1px solid var(--border); }
+    .proj-list a {
+      display: flex; align-items: stretch;
+      color: var(--text); transition: background 0.15s;
+    }
+    .proj-list a:hover { background: var(--surface); opacity: 1; }
+    .proj-list a:hover .proj-title { color: var(--accent); }
+    .proj-num {
+      flex-shrink: 0;
+      width: 70px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--text-dim);
+      display: flex; align-items: center; justify-content: center;
+      border-right: 1px solid var(--border);
+      padding: 1.2rem 0;
+    }
+    .proj-body {
+      flex: 1;
+      padding: 1.2rem 1.4rem;
+      display: flex; flex-direction: column; gap: 0.25rem;
+    }
+    .proj-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.015em;
+      color: var(--text); transition: color 0.15s;
+    }
+    .proj-desc {
+      font-size: 0.85rem; color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .proj-arrow {
+      flex-shrink: 0;
+      width: 70px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--text-dim);
+      transition: color 0.15s, transform 0.15s;
+    }
+    .proj-list a:hover .proj-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* Links section */
+    .links-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .link-card {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 1.4rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+    .link-card:last-child { border-right: none; }
+    .link-card:hover { background: var(--surface); opacity: 1; }
+    .link-card:hover .link-card-title { color: var(--accent); }
+    .link-card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-dim);
+    }
+    .link-card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.01em;
+      color: var(--text); transition: color 0.15s;
+    }
+    .link-card-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem; color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 2.5rem 1.5rem; min-height: 280px; }
+      .hero-right { padding: 1.8rem 1.5rem; }
+      .page { padding: 0 1.2rem 4rem; }
+      .proj-num, .proj-arrow { width: 50px; }
+      .links-row { grid-template-columns: 1fr; }
+      .link-card { border-right: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="monogram">hs</div>
+  <div class="scroll-bar" id="scrollBar"></div>
 
-  <main class="wrap">
-    <span class="eyebrow">Hello</span>
-    <h1>Hector<br>Sigala</h1>
-    <div class="rule"></div>
-    <p class="lede">Founder of <a href="https://middleseat.co" target="_blank" rel="noopener">Middle Seat</a> — a Democratic digital ads agency. I build tools for political campaigns, and lately I'm teaching my kids to build their own.</p>
-    <p class="lede">This is where I park projects that aren't for work.</p>
+  <div class="page">
 
-    <h2>Things I'm working on</h2>
-    <ul class="links">
-      <li><a href="/kids-training/">
-        <span class="link-title">Claude Code Sundays</span>
-        <span class="link-note">Teaching my boys to build →</span>
-      </a></li>
-    </ul>
+    <div class="site-header">
+      <div class="site-header-logo">Hector<span>/</span>Sigala</div>
+      <div class="site-header-meta">EST. 2026 &nbsp;·&nbsp; LOS ANGELES</div>
+    </div>
 
-    <h2>Find me</h2>
-    <ul class="links">
-      <li><a href="https://middleseat.co" target="_blank" rel="noopener">
-        <span class="link-title">Middle Seat</span>
-        <span class="link-note">middleseat.co →</span>
-      </a></li>
-      <li><a href="https://github.com/hgsigala" target="_blank" rel="noopener">
-        <span class="link-title">GitHub</span>
-        <span class="link-note">@hgsigala →</span>
-      </a></li>
-      <li><a href="mailto:hector@middleseat.co">
-        <span class="link-title">Email</span>
-        <span class="link-note">hector@middleseat.co →</span>
-      </a></li>
-    </ul>
+    <div class="hero">
+      <div class="hero-left">
+        <h1>Hector<br><span class="slash">/</span>Sigala</h1>
+        <div class="hero-sub">Founder &middot; Middle Seat &middot; Teaching the kids to build</div>
+      </div>
+      <div class="hero-right">
+        <div>
+          <div class="hero-right-label">// On the desk</div>
+          <p class="hero-quote" style="margin-top:0.7rem;">Building <em>tools</em> for Democratic campaigns. Lately, teaching my kids to build their <em>own</em>.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hs-label">Studio</div>
+            <div class="hs-val">Middle Seat</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-label">Kids coding</div>
+            <div class="hs-val">2</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-label">Cycle</div>
+            <div class="hs-val">2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <p class="footer">Made with my kids, for my kids.</p>
-  </main>
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 01</div>
+          <div class="chapter-title">What I'm building</div>
+          <div class="chapter-subtitle">Personal projects and side experiments. The work stuff lives at middleseat.co.</div>
+        </div>
+        <div class="ch-bg-num">01</div>
+      </div>
+
+      <ul class="proj-list">
+        <li><a href="/kids-training/">
+          <div class="proj-num">01</div>
+          <div class="proj-body">
+            <div class="proj-title">Claude Code Sundays</div>
+            <div class="proj-desc">Sunday afternoon coding classes with Gael (9) and Ivan (16). Lesson deck, project ideas, and the curriculum I run with them every week.</div>
+          </div>
+          <div class="proj-arrow">&rarr;</div>
+        </a></li>
+      </ul>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 02</div>
+          <div class="chapter-title">Find me</div>
+          <div class="chapter-subtitle">Pick a channel.</div>
+        </div>
+        <div class="ch-bg-num">02</div>
+      </div>
+
+      <div class="links-row">
+        <a class="link-card" href="https://middleseat.co" target="_blank" rel="noopener">
+          <div class="link-card-label">// Studio</div>
+          <div class="link-card-title">Middle Seat</div>
+          <div class="link-card-meta">middleseat.co &nbsp;&rarr;</div>
+        </a>
+        <a class="link-card" href="https://github.com/hgsigala" target="_blank" rel="noopener">
+          <div class="link-card-label">// Code</div>
+          <div class="link-card-title">GitHub</div>
+          <div class="link-card-meta">@hgsigala &nbsp;&rarr;</div>
+        </a>
+        <a class="link-card" href="mailto:hector@middleseat.co">
+          <div class="link-card-label">// Email</div>
+          <div class="link-card-title">Direct</div>
+          <div class="link-card-meta">hector@middleseat.co &nbsp;&rarr;</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>&copy; 2026 &middot; Hector Sigala</div>
+      <div>Made with my kids, for my kids</div>
+    </div>
+
+  </div>
+
+  <script>
+    const bar = document.getElementById('scrollBar');
+    function updateBar() {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateBar, { passive: true });
+    updateBar();
+  </script>
 
 </body>
 </html>
