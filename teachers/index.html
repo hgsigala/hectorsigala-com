@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachers — hectorsigala.com</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:site_name" content="hectorsigala.com">
+  <meta property="og:title" content="Teaching log — Claude Code Sundays">
+  <link rel="icon" type="image/png" href="/kids-training/favicon.png">
+  <link rel="apple-touch-icon" href="/kids-training/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:         #1a1a1a;
+      --surface:    #242424;
+      --surface-2:  #2c2c2c;
+      --surface-3:  #353535;
+      --border:     rgba(255,255,255,0.09);
+      --border-2:   rgba(255,255,255,0.16);
+      --text:       #f0ede8;
+      --text-dim:   #888888;
+      --text-dimmer:#555555;
+      --accent:     #E8401C;
+      --accent-dim: rgba(232,64,28,0.12);
+      --green:      #4abe88;
+      --green-dim:  rgba(74,190,136,0.12);
+      --yellow:     #f0c34e;
+      --yellow-dim: rgba(240,195,78,0.14);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Barlow', system-ui, -apple-system, sans-serif;
+      font-size: 15px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; transition: opacity 0.15s; }
+    a:hover { opacity: 0.8; }
+
+    .scroll-bar {
+      position: fixed; top: 0; left: 0; z-index: 1001;
+      height: 2px; background: var(--accent);
+      width: 0%; transition: width 0.06s linear;
+      pointer-events: none;
+    }
+
+    .page { max-width: 1080px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+    /* Site header */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text);
+    }
+    .site-header-logo span { color: var(--accent); }
+    .site-header-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim); letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      min-height: 360px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-left {
+      background: var(--accent); padding: 2.5rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      position: relative;
+    }
+    .hero-left::before {
+      content: "TEACHERS LOG\00000ACONFIDENTIAL\00000ACLAUDE CODE SUNDAYS";
+      position: absolute; top: 1.5rem; left: 2.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: rgba(0,0,0,0.45); letter-spacing: 0.08em;
+      white-space: pre; line-height: 1.65;
+    }
+    .hero h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3rem, 6.5vw, 5rem);
+      font-weight: 900; color: #0a0a0a;
+      letter-spacing: -0.005em; line-height: 0.88;
+      text-transform: uppercase; margin-bottom: 0.7rem;
+    }
+    .hero h1 .slash { color: rgba(0,0,0,0.35); font-weight: 800; }
+    .hero .hero-sub {
+      color: rgba(0,0,0,0.65); font-size: 0.85rem;
+      font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; max-width: 340px; line-height: 1.45;
+    }
+    .hero-right {
+      background: #111; padding: 2rem 2rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+      gap: 1.2rem;
+    }
+    .hero-right-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .hero-quote {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+      font-weight: 700; line-height: 1.15;
+      color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.005em;
+    }
+    .hero-quote em { color: var(--accent); font-style: normal; }
+    .hero-stats {
+      display: flex; gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stat {
+      flex: 1; padding: 0.75rem 0.85rem;
+      border-right: 1px solid var(--border);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat .hs-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-dim);
+    }
+    .hero-stat .hs-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 800; color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.01em;
+      margin-top: 0.15rem;
+    }
+    .hero-stat .hs-val.hot { color: var(--accent); }
+
+    /* Chapter */
+    .chapter { border-top: 1px solid var(--border); position: relative; }
+    .chapter:first-of-type { border-top: none; }
+    .chapter-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 2rem; padding: 3rem 0 1.4rem;
+      position: relative; overflow: hidden;
+    }
+    .chapter-header-inner { flex: 1; position: relative; z-index: 2; }
+    .chapter-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--accent); margin-bottom: 0.4rem;
+    }
+    .chapter-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+      font-weight: 800; color: var(--text);
+      letter-spacing: 0.01em; line-height: 1;
+      text-transform: uppercase;
+    }
+    .chapter-subtitle {
+      font-size: 0.92rem; color: var(--text-dim);
+      margin-top: 0.55rem; max-width: 640px; line-height: 1.55;
+    }
+    .ch-bg-num {
+      position: absolute; right: -0.5rem; top: 50%; transform: translateY(-50%);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(7rem, 13vw, 9rem); font-weight: 900;
+      color: rgba(255,255,255,0.04); line-height: 1;
+      user-select: none; pointer-events: none; letter-spacing: -0.02em;
+    }
+
+    /* Section label */
+    .section-label {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-dim); margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+    }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; }
+    .timeline-row {
+      display: grid; grid-template-columns: 90px 1fr;
+      gap: 1.4rem; padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .timeline-row:last-child { border-bottom: none; }
+    .timeline-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.02em;
+    }
+    .timeline-content h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      color: var(--text); margin-bottom: 0.3rem;
+    }
+    .timeline-content p { font-size: 0.92rem; color: var(--text-dim); }
+
+    /* Track card (kid plan) */
+    .tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    @media (max-width: 800px) { .tracks { grid-template-columns: 1fr; } }
+    .track-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.6rem 1.7rem;
+      position: relative;
+    }
+    .track-card-tag {
+      position: absolute; top: 0; left: 0;
+      padding: 0.35rem 0.85rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: #0a0a0a;
+    }
+    .track-card-tag.gael { background: var(--accent); }
+    .track-card-tag.ivan { background: var(--green); }
+    .track-card h3 {
+      margin-top: 1.1rem; margin-bottom: 0.4rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem; font-weight: 800; color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.01em;
+    }
+    .track-card .meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 1rem;
+    }
+    .track-card p { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 0.7rem; }
+    .track-card .prompt {
+      background: var(--green-dim); border-left: 3px solid var(--green);
+      padding: 0.85rem 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; line-height: 1.6; color: var(--text);
+      margin: 0.9rem 0;
+    }
+    .track-card ol { padding-left: 1.2rem; font-size: 0.88rem; }
+    .track-card ol li { padding: 0.25rem 0; color: var(--text-dim); }
+    .track-card ol li strong { color: var(--text); font-weight: 600; }
+    .track-card ul { list-style: none; padding: 0; font-size: 0.86rem; }
+    .track-card ul li { padding: 0.25rem 0; color: var(--text-dim); }
+    .track-card ul li::before { content: '◆  '; color: var(--accent); font-size: 0.55rem; }
+    .track-card .sub-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 1rem; margin-bottom: 0.3rem;
+    }
+
+    /* Status badges */
+    .status-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid;
+    }
+    .badge.live { color: var(--green); border-color: rgba(74,190,136,0.4); background: var(--green-dim); }
+    .badge.next { color: var(--yellow); border-color: rgba(240,195,78,0.4); background: var(--yellow-dim); }
+    .badge.cohort { color: var(--accent); border-color: rgba(232,64,28,0.4); background: var(--accent-dim); }
+    .badge::before { content: '●'; font-size: 0.5rem; }
+
+    /* Notes box */
+    .notes {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1.3rem 1.5rem;
+      font-size: 0.88rem; color: var(--text-dim);
+      line-height: 1.65;
+    }
+    .notes strong { color: var(--text); font-weight: 600; }
+    .notes ul { list-style: none; padding: 0; margin-top: 0.6rem; }
+    .notes ul li { padding: 0.3rem 0; }
+    .notes ul li::before { content: '→ '; color: var(--accent); font-weight: 700; }
+
+    /* Project ideas grid */
+    .ideas-section { margin-bottom: 2rem; }
+    .ideas-section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      color: var(--text); margin-top: 1.8rem; margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .ideas-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.7rem;
+    }
+    .idea-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.95rem 1.1rem;
+      transition: border-color 0.15s;
+    }
+    .idea-card:hover { border-color: var(--border-2); }
+    .idea-card .idea-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      color: var(--text); margin-bottom: 0.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    }
+    .idea-card .idea-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.1em; padding: 0.15rem 0.45rem;
+      flex-shrink: 0;
+    }
+    .idea-card .idea-tag.g { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,64,28,0.3); }
+    .idea-card .idea-tag.i { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,190,136,0.3); }
+    .idea-card .idea-tag.gi { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(240,195,78,0.3); }
+    .idea-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 2rem 1.3rem; min-height: 240px; }
+      .hero-right { padding: 1.5rem 1.3rem; }
+      .page { padding: 0 1.1rem 4rem; }
+      .timeline-row { grid-template-columns: 70px 1fr; gap: 0.9rem; }
+      .timeline-time { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scroll-bar" id="scrollBar"></div>
+
+  <div class="page">
+
+    <div class="site-header">
+      <div class="site-header-logo"><a href="/" style="color:inherit;">Hector<span>/</span>Sigala</a> &nbsp;·&nbsp; <span style="color:var(--text-dim);">Teachers</span></div>
+      <div class="site-header-meta">CONFIDENTIAL &nbsp;·&nbsp; INTERNAL</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-left">
+        <h1>Teachers<br><span class="slash">/</span>Log</h1>
+        <div class="hero-sub">Sunday Claude Code classes &middot; Gael &amp; Ivan &middot; Dad's playbook</div>
+      </div>
+      <div class="hero-right">
+        <div>
+          <div class="hero-right-label">// Now playing</div>
+          <p class="hero-quote" style="margin-top:0.6rem;">Week <em>01</em> — Build something local. <em>This Sunday.</em></p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hs-label">Week</div>
+            <div class="hs-val hot">01</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-label">Date</div>
+            <div class="hs-val">May 17</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hs-label">Status</div>
+            <div class="hs-val">Live</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 1: Status -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 01</div>
+          <div class="chapter-title">Status</div>
+          <div class="chapter-subtitle">Where things stand. Update this column after each Sunday.</div>
+        </div>
+        <div class="ch-bg-num">01</div>
+      </div>
+
+      <div class="status-row">
+        <span class="badge live">Live — Week 01</span>
+        <span class="badge cohort">Gael · 9 · iMac</span>
+        <span class="badge cohort">Ivan · 16 · MacBook</span>
+        <span class="badge next">Next — Week 02 · GitHub</span>
+      </div>
+
+      <div class="notes">
+        <strong>This Sunday's plan in one line:</strong> open Terminal once, make the Sites folder, hand off to Claude Code, build a local project. No GitHub. No deploy. Just the satisfaction of seeing something they built on their own screen.
+        <ul>
+          <li><strong>Deck for class:</strong> <a href="/kids-training/">hectorsigala.com/kids-training/</a> &middot; 20 slides &middot; ~12 min walkthrough</li>
+          <li><strong>Local notes folder:</strong> ~/Sites/kids-training/ &middot; markdown source of this page</li>
+          <li><strong>Each kid:</strong> own machine, own Sites folder, own $20/mo Claude Code Pro plan</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 2: This Sunday's plan -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 02 · 2026-05-17</div>
+          <div class="chapter-title">This Sunday's plan</div>
+          <div class="chapter-subtitle">One-hour session. Both boys leave with a real thing they built sitting on a local URL they can open. That "I made this" moment is the whole point of week 1.</div>
+        </div>
+        <div class="ch-bg-num">02</div>
+      </div>
+
+      <div class="section-label">// Order of the hour</div>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-time">0:00–0:10</div>
+          <div class="timeline-content">
+            <h4>Walk the deck together</h4>
+            <p>Open <a href="/kids-training/">hectorsigala.com/kids-training/</a> on the iMac screen. Slides 1–15: concept, safety, one-app, terminal mini-lesson, folders, prompting, plan-vs-auto, approvals, CLAUDE.md. ~12 min.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">0:10</div>
+          <div class="timeline-content">
+            <h4>Each kid sets up their CLAUDE.md</h4>
+            <p>Paste the kid CLAUDE.md (slide 15 of the deck) into Claude Code. Save to <span style="font-family:monospace;color:var(--text);">~/Sites/CLAUDE.md</span> on each machine.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">0:15</div>
+          <div class="timeline-content">
+            <h4>Split</h4>
+            <p>Gael starts 30 min on Code.org Course D. Ivan starts his Homework Tracker in Claude Code.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">0:45</div>
+          <div class="timeline-content">
+            <h4>Gael switches to Claude Code</h4>
+            <p>Gael starts his "All About Me" page on the iMac.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-time">1:00</div>
+          <div class="timeline-content">
+            <h4>Show &amp; tell</h4>
+            <p>Each kid opens their site and walks the other through it. Take screenshots.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="section-label">// Per-kid plans</div>
+      <div class="tracks">
+
+        <div class="track-card">
+          <div class="track-card-tag gael">🖥️ Gael · iMac · 30 min</div>
+          <h3>"All About Me" page</h3>
+          <div class="meta">~/Sites/all-about-me/</div>
+          <p>A page with his name in giant letters, a grid of favorite things with pictures, a photo of him.</p>
+
+          <div class="sub-label">// The prompt (he says it, you help him type)</div>
+          <div class="prompt">"Make a new project called all-about-me in my Sites folder. Make a website that says my name is Gael in big letters at the top. Below that, make a grid of my favorite things with pictures. My favorite Pokémon is [X], my favorite Minecraft mob is [Y], my favorite food is [Z]. Use [color] as the main color. Also create an images/ folder so I can drop a picture of myself in there, and use it on the page next to my name."</div>
+
+          <div class="sub-label">// Build steps</div>
+          <ol>
+            <li>Open the Claude Code app on the iMac</li>
+            <li><strong>First time only:</strong> save the kid CLAUDE.md to ~/Sites/CLAUDE.md</li>
+            <li>Paste the prompt above</li>
+            <li>Approve commands as Claude asks (mkdir, write file — all safe per slide 14)</li>
+            <li>Open the local URL Claude gives him — see the page</li>
+            <li>Drop a photo into <span style="font-family:monospace;color:var(--text);">images/</span> via Finder, tell Claude the filename, refresh</li>
+          </ol>
+
+          <div class="sub-label">// Stretch if time</div>
+          <ul>
+            <li>Add a button that changes the background color when clicked</li>
+            <li>Add a click counter to his favorite Pokémon card</li>
+          </ul>
+
+          <div class="sub-label">// "Done" looks like</div>
+          <p>He opens the local URL and sees HIS name, HIS favorite things, HIS photo. Screenshot. Show Mom.</p>
+
+          <div class="sub-label">// Then 30 min on Code.org</div>
+          <p>Course D — <a href="https://studio.code.org/s/coursed-2023" target="_blank" rel="noopener">studio.code.org/s/coursed-2023</a>. Pick up where he is. If brand new, start at Lesson 1 (Sequencing). Just make progress.</p>
+        </div>
+
+        <div class="track-card">
+          <div class="track-card-tag ivan">💻 Ivan · MacBook · 60 min</div>
+          <h3>Homework tracker</h3>
+          <div class="meta">~/Sites/homework-tracker/</div>
+          <p>Single-page tool he'll actually use Monday morning. The point: feel the magic of Claude Code building something real, not a toy.</p>
+
+          <div class="sub-label">// The prompt</div>
+          <div class="prompt">"Make a new project called homework-tracker in my Sites folder. Build a single-page homework tracker. I should be able to add an assignment with a subject, title, and due date. Show them grouped by due date with the closest ones at the top. Let me check them off when I'm done. Save everything to localStorage so it persists. Make it look clean — dark background, monospaced font for dates."</div>
+
+          <div class="sub-label">// Build steps</div>
+          <ol>
+            <li>Open the Claude Code app on his MacBook</li>
+            <li><strong>First time only:</strong> save the kid CLAUDE.md to ~/Sites/CLAUDE.md</li>
+            <li>Paste the prompt above</li>
+            <li>Approve commands as Claude asks</li>
+            <li>Open the local URL — try adding 3 real assignments from this week</li>
+          </ol>
+
+          <div class="sub-label">// Push him on</div>
+          <ul>
+            <li>"What happens if you close the tab and come back?" (tests localStorage)</li>
+            <li>"Can you delete an assignment you added by mistake?"</li>
+            <li>"Make assignments due today turn red. Due this week yellow. Later gray."</li>
+          </ul>
+
+          <div class="sub-label">// Stretch</div>
+          <ul>
+            <li>Filter: hide done assignments by default, toggle to show</li>
+            <li>Count at the top: "3 due this week, 1 overdue"</li>
+          </ul>
+
+          <div class="sub-label">// "Done" looks like</div>
+          <p>He adds a real homework assignment, closes the tab, reopens the page — it's still there. <strong style="color:var(--text);">No GitHub or deploy today.</strong> That's next week.</p>
+        </div>
+
+      </div>
+
+
+      <div class="section-label">// After class</div>
+      <div class="notes">
+        <strong>Fill in after the session:</strong>
+        <ul>
+          <li>Gael shipped: <em>(write in)</em></li>
+          <li>Ivan shipped: <em>(write in)</em></li>
+          <li>What to revisit next Sunday: <em>(write in)</em></li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 3: Next Sunday -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 03 · 2026-05-24</div>
+          <div class="chapter-title">Next Sunday — Week 02</div>
+          <div class="chapter-subtitle">Preview of where we're going next.</div>
+        </div>
+        <div class="ch-bg-num">03</div>
+      </div>
+
+      <div class="notes">
+        <ul>
+          <li>Recap their local projects from this week</li>
+          <li><strong>GitHub:</strong> what it is, why it matters, set up their personal repos under each kid's GitHub account</li>
+          <li><strong>Vercel:</strong> put one of their projects on the real internet</li>
+          <li>Each kid leaves with a public URL they can text to grandma</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- CHAPTER 4: Project ideas -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 04</div>
+          <div class="chapter-title">Project Ideas Bank</div>
+          <div class="chapter-subtitle">Running list. <span style="color:var(--accent);">G</span> = good for Gael (9), <span style="color:var(--green);">I</span> = good for Ivan (16), <span style="color:var(--yellow);">G+I</span> = works for both.</div>
+        </div>
+        <div class="ch-bg-num">04</div>
+      </div>
+
+      <div class="ideas-section-title">Personal sites &amp; pages</div>
+      <div class="ideas-grid">
+        <div class="idea-card">
+          <div class="idea-name">All About Me page <span class="idea-tag g">G</span></div>
+          <p>Hero with name, favorite-things grid, photo. <strong style="color:var(--accent);">Week 1 starter for Gael.</strong></p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Family birthday tracker <span class="idea-tag gi">G+I</span></div>
+          <p>List of birthdays, highlights the next one coming up.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Sticker book <span class="idea-tag g">G</span></div>
+          <p>Grid of cards (Pokémon, sports, Minecraft) with a "show only legendary" filter.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Personal portfolio <span class="idea-tag i">I</span></div>
+          <p>Bio, what he's working on, school stuff, contact links. Good once he wants a corner of the internet that's his.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Collection display <span class="idea-tag gi">G+I</span></div>
+          <p>List of music / books / shows / games with ratings, notes.</p>
+        </div>
+      </div>
+
+      <div class="ideas-section-title">Tools that solve a real annoyance</div>
+      <div class="ideas-grid">
+        <div class="idea-card">
+          <div class="idea-name">Homework tracker <span class="idea-tag i">I</span></div>
+          <p>Add assignment + due date, group by date, localStorage. <strong style="color:var(--green);">Week 1 starter for Ivan.</strong></p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Chore tracker <span class="idea-tag gi">G+I</span></div>
+          <p>Weekly checklist, points/streak counter.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Allowance tracker <span class="idea-tag gi">G+I</span></div>
+          <p>Money in/out, current balance, savings goals.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">"What should I eat?" randomizer <span class="idea-tag gi">G+I</span></div>
+          <p>Family favorites list, hit a button, get a pick.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Driving log <span class="idea-tag i">I</span></div>
+          <p>For when Ivan starts driving — track hours, weather, who supervised.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Reading log <span class="idea-tag gi">G+I</span></div>
+          <p>Books read, pages this week, star ratings.</p>
+        </div>
+      </div>
+
+      <div class="ideas-section-title">Games</div>
+      <div class="ideas-grid">
+        <div class="idea-card">
+          <div class="idea-name">Clicker game <span class="idea-tag g">G</span></div>
+          <p>Cookie clicker with custom theme. Click → increment → upgrades → big numbers.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Magic 8-Ball <span class="idea-tag g">G</span></div>
+          <p>He writes his own funny answers.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Soundboard <span class="idea-tag g">G</span></div>
+          <p>Buttons that play fart noises / favorite quotes / sound effects.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Rock-paper-scissors <span class="idea-tag g">G</span></div>
+          <p>With his face on the buttons.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Whack-a-mole <span class="idea-tag gi">G+I</span></div>
+          <p>Custom theme. Harder version for Ivan with score/lives/levels.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Typing test <span class="idea-tag i">I</span></div>
+          <p>Timer, WPM count, accuracy %, leaderboard via localStorage.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Memory match <span class="idea-tag gi">G+I</span></div>
+          <p>Flip cards, find pairs. Harder version for Ivan with grid-size selector.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Snake <span class="idea-tag i">I</span></div>
+          <p>Classic. Good intro to game loops + collision.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Quiz app <span class="idea-tag i">I</span></div>
+          <p>He writes questions for a school subject; app shuffles, scores, tracks history.</p>
+        </div>
+      </div>
+
+      <div class="ideas-section-title">Useful real-data tools</div>
+      <div class="ideas-grid">
+        <div class="idea-card">
+          <div class="idea-name">Weather page for our city <span class="idea-tag gi">G+I</span></div>
+          <p>Live weather, current + week ahead. Light intro to fetch.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Sports stats dashboard <span class="idea-tag gi">G+I</span></div>
+          <p>Favorite team. Latest score, schedule, standings.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">"Is it pizza Friday?" <span class="idea-tag g">G</span></div>
+          <p>Silly. Introduces "code that knows what day it is."</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">YouTube channel stats <span class="idea-tag i">I</span></div>
+          <p>Pick a creator, show subscriber count, recent uploads.</p>
+        </div>
+      </div>
+
+      <div class="ideas-section-title">Stretch ideas — later weeks</div>
+      <div class="ideas-grid">
+        <div class="idea-card">
+          <div class="idea-name">Discord-style chat UI <span class="idea-tag i">I</span></div>
+          <p>Frontend only, fake messages. Introduces componentized thinking.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Twitter/X clone <span class="idea-tag i">I</span></div>
+          <p>Mock posts. Same idea as above.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Drawing pad <span class="idea-tag g">G</span></div>
+          <p>Mouse-driven canvas. Etch-a-Sketch energy.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Spotify-style player UI <span class="idea-tag i">I</span></div>
+          <p>Looks like a player, plays one song he picks. CSS-heavy.</p>
+        </div>
+        <div class="idea-card">
+          <div class="idea-name">Family wall <span class="idea-tag gi">G+I</span></div>
+          <p>Shared notes/messages list. Backend territory — save for after localStorage week.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>Internal &middot; Teachers log &middot; Not indexed</div>
+      <div><a href="/kids-training/">→ Open class deck</a></div>
+    </div>
+
+  </div>
+
+  <script>
+    const bar = document.getElementById('scrollBar');
+    function updateBar() {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      bar.style.width = pct + '%';
+    }
+    window.addEventListener('scroll', updateBar, { passive: true });
+    updateBar();
+  </script>
+
+</body>
+</html>

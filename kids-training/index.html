@@ -432,6 +432,109 @@
       text-transform: uppercase;
     }
 
+    /* ── Terminal / Finder window mockups ── */
+    .win {
+      background: #0d0d0d;
+      border: 1px solid var(--border-2);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .win-bar {
+      background: #1c1c1c;
+      padding: 0.55rem 0.85rem;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .win-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .win-dot-r { background: #ff5f57; }
+    .win-dot-y { background: #febc2e; }
+    .win-dot-g { background: #28c840; }
+    .win-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; color: var(--text-dim);
+      margin-left: 0.6rem; letter-spacing: 0.04em;
+    }
+    .term-body {
+      padding: 1rem 1.2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem; line-height: 1.95;
+      color: var(--text);
+      flex: 1;
+    }
+    .term-body .prompt { color: var(--green); user-select: none; margin-right: 0.55rem; }
+    .term-body .cmd    { color: var(--accent); }
+    .term-body .comment{ color: var(--text-dimmer); }
+    .term-body .cursor {
+      display: inline-block; width: 9px; height: 16px;
+      background: var(--green); vertical-align: text-bottom;
+      animation: blink 1.2s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .finder-body {
+      display: grid; grid-template-columns: 130px 1fr;
+      flex: 1; min-height: 200px;
+    }
+    .finder-sidebar {
+      background: #181818;
+      padding: 0.7rem 0.6rem;
+      border-right: 1px solid var(--border);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.78rem; line-height: 2;
+      color: var(--text-dim);
+    }
+    .finder-sidebar .sb-head {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-dimmer);
+      margin-top: 0.5rem; margin-bottom: 0.2rem;
+    }
+    .finder-sidebar .sb-head:first-child { margin-top: 0; }
+    .finder-sidebar .sb-row { padding: 0 0.4rem; border-radius: 4px; }
+    .finder-sidebar .sb-row.active {
+      background: var(--accent); color: #0a0a0a; font-weight: 600;
+    }
+    .finder-main {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 0.6rem;
+      padding: 1.2rem; text-align: center;
+      background: #161616;
+    }
+    .finder-main .folder-icon { font-size: 3.4rem; line-height: 1; }
+    .finder-main .folder-name {
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem; color: var(--text);
+    }
+    .finder-main .empty-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem; color: var(--text-dimmer);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* ── Command keys ──────────────────── */
+    .cmd-key {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .cmd-key .cmd-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.15rem; font-weight: 700; color: var(--accent);
+    }
+    .cmd-key .cmd-desc {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .cmd-key .cmd-example {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; color: var(--text-dim);
+      letter-spacing: 0.02em;
+    }
+
     /* ── Stat row ──────────────────────── */
     .stat-row {
       display: flex; gap: 0; margin-top: 2.5rem;
@@ -520,7 +623,7 @@
 <div class="topbar">
   <a class="topbar-logo" href="/">Hector<span>/</span>Sigala</a>
   <div class="topbar-right">
-    <span class="slide-counter" id="counter">01 / 15</span>
+    <span class="slide-counter" id="counter">01 / 20</span>
   </div>
 </div>
 
@@ -673,7 +776,7 @@
       <span class="eyebrow fade-up">// Your toolkit</span>
       <h2 class="fade-up">One app.<br><span class="accent">That's it.</span></h2>
       <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">For now, just one tool. The <strong style="color:var(--text);">Claude Code app</strong> on your computer. You open it, you type, it builds. No terminal, no nothing.</p>
+      <p class="lede fade-up" style="max-width:760px;">For most of the work, just one tool: the <strong style="color:var(--text);">Claude Code app</strong>. You open it, you type, it builds. We'll touch Terminal <em>once</em> in a minute to set up your Sites folder &mdash; then it's all Claude from there.</p>
 
       <div class="one-app fade-up" style="margin-top:2.5rem;">
         <div class="one-app-icon">CC</div>
@@ -703,16 +806,292 @@
         <div><strong>Your subscription is your subscription.</strong> Each of you has your own $20/month Claude Code Pro plan. Use it like crazy — that's what it's for.</div>
       </div>
 
-      <p class="fade-up" style="margin-top:1.5rem;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.04em;">// Later weeks: terminal, VS Code, GitHub. Not today.</p>
+      <p class="fade-up" style="margin-top:1.5rem;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.04em;">// Tiny bit of Terminal next slide. VS Code + GitHub come in later weeks.</p>
+    </div>
+  </div>
+
+
+
+  <!-- ════════════════════════════════════════════
+       SLIDE 06 — MEET TERMINAL
+  ════════════════════════════════════════════ -->
+  <div class="slide" data-slide="6">
+    <div class="ch-bg-num">06</div>
+    <div class="inner" style="position:relative;z-index:2;">
+      <div class="slide-icon fade-up">⌨️</div>
+      <span class="eyebrow fade-up">// Meet Terminal · first time</span>
+      <h2 class="fade-up">Open the <span class="accent">Terminal</span></h2>
+      <div class="rule fade-up"></div>
+      <p class="lede fade-up" style="max-width:820px;">Terminal is a window where you can type instructions to your computer. It's just an app &mdash; like Safari or Mail. Nothing scary.</p>
+
+      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
+
+        <div>
+          <div class="card-num" style="margin-bottom:0.8rem;">// How to open it</div>
+          <div class="num-rules" style="border-top:1px solid var(--border);">
+            <div class="num-rule">
+              <div class="num-rule-num">01</div>
+              <div>
+                <h3>Hold Cmd, press Space</h3>
+                <p>That opens Spotlight, the little search bar in the middle of your screen.</p>
+              </div>
+            </div>
+            <div class="num-rule">
+              <div class="num-rule-num">02</div>
+              <div>
+                <h3>Type "Terminal"</h3>
+                <p>Spotlight finds the app instantly.</p>
+              </div>
+            </div>
+            <div class="num-rule" style="border-bottom:none;">
+              <div class="num-rule-num">03</div>
+              <div>
+                <h3>Hit Enter</h3>
+                <p>Terminal opens. You'll see a window with a blinking cursor.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dot win-dot-r"></span>
+            <span class="win-dot win-dot-y"></span>
+            <span class="win-dot win-dot-g"></span>
+            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
+          </div>
+          <div class="term-body">
+            <div class="comment"># this is what it looks like when it opens</div>
+            <div><span class="prompt">$</span> <span class="cursor"></span></div>
+            <div style="margin-top:1.5rem;color:var(--text-dimmer);font-size:0.78rem;">The <span style="color:var(--green);">$</span> is just saying "ready for you to type."</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="callout fade-up">
+        <span class="callout-icon">🧘</span>
+        <div><strong>Don't panic.</strong> The black-and-text window looks like hacker movies. It isn't. We only need 3 commands today, and we'll go one at a time.</div>
+      </div>
     </div>
   </div>
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 06 — WHERE PROJECTS LIVE
+       SLIDE 07 — LS (LIST STUFF)
   ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="6">
-    <div class="ch-bg-num">06</div>
+  <div class="slide slide-surface" data-slide="7">
+    <div class="ch-bg-num">07</div>
+    <div class="inner" style="position:relative;z-index:2;">
+      <div class="slide-icon fade-up">👀</div>
+      <span class="eyebrow fade-up">// Command 1 of 3</span>
+      <h2 class="fade-up">Type <span class="accent">ls</span> and hit Enter</h2>
+      <div class="rule fade-up"></div>
+      <p class="lede fade-up" style="max-width:820px;">"ls" means <em>list stuff</em>. It shows you everything inside the folder you're standing in right now. Try it.</p>
+
+      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
+
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dot win-dot-r"></span>
+            <span class="win-dot win-dot-y"></span>
+            <span class="win-dot win-dot-g"></span>
+            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
+          </div>
+          <div class="term-body">
+            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
+            <div style="color:var(--text-dim);line-height:1.7;">Applications&nbsp;&nbsp;Desktop&nbsp;&nbsp;Documents</div>
+            <div style="color:var(--text-dim);line-height:1.7;">Downloads&nbsp;&nbsp;Movies&nbsp;&nbsp;Music</div>
+            <div style="color:var(--text-dim);line-height:1.7;">Pictures&nbsp;&nbsp;Public</div>
+            <div><span class="prompt">$</span> <span class="cursor"></span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cmd-key" style="background:var(--surface);border-color:var(--border-2);">
+            <div class="cmd-name">ls</div>
+            <div class="cmd-desc">Short for "list"</div>
+            <div class="cmd-example">Lists every folder and file in the place where you're standing.</div>
+          </div>
+          <p style="margin-top:1.2rem;font-size:0.95rem;line-height:1.55;color:var(--text-dim);">When you first open Terminal, you're standing in your <strong style="color:var(--text);">home folder</strong>. <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;">ls</span> shows the same stuff you'd see if you opened Finder and clicked your name.</p>
+
+          <div class="callout" style="margin-top:1.4rem;">
+            <span class="callout-icon">🎯</span>
+            <div><strong>Try it now:</strong> type <span style="font-family:'IBM Plex Mono',monospace;color:var(--text);">ls</span> and hit Enter. Read what shows up out loud.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       SLIDE 08 — MKDIR (MAKE A FOLDER)
+  ════════════════════════════════════════════ -->
+  <div class="slide" data-slide="8">
+    <div class="ch-bg-num">08</div>
+    <div class="inner" style="position:relative;z-index:2;">
+      <div class="slide-icon fade-up">📁</div>
+      <span class="eyebrow fade-up">// Command 2 of 3</span>
+      <h2 class="fade-up">Type <span class="accent">mkdir Sites</span></h2>
+      <div class="rule fade-up"></div>
+      <p class="lede fade-up" style="max-width:820px;">"mkdir" means <em>make directory</em>. "Directory" is a fancy word for folder. So this command makes a brand new folder called <strong style="color:var(--text);">Sites</strong>.</p>
+
+      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
+
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dot win-dot-r"></span>
+            <span class="win-dot win-dot-y"></span>
+            <span class="win-dot win-dot-g"></span>
+            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
+          </div>
+          <div class="term-body">
+            <div><span class="prompt">$</span> <span class="cmd">mkdir Sites</span></div>
+            <div class="comment"># nothing happens? that's how Terminal says "OK, done."</div>
+            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
+            <div style="color:var(--text-dim);line-height:1.7;">Applications&nbsp;&nbsp;Desktop&nbsp;&nbsp;Documents</div>
+            <div style="color:var(--text-dim);line-height:1.7;">Downloads&nbsp;&nbsp;Movies&nbsp;&nbsp;Music</div>
+            <div style="color:var(--text-dim);line-height:1.7;">Pictures&nbsp;&nbsp;Public&nbsp;&nbsp;<span style="color:var(--green);">Sites</span> &larr; new!</div>
+            <div><span class="prompt">$</span> <span class="cursor"></span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cmd-key" style="background:var(--surface);border-color:var(--border-2);">
+            <div class="cmd-name">mkdir Sites</div>
+            <div class="cmd-desc">Make a folder called Sites</div>
+            <div class="cmd-example">"mkdir" = make directory. "Sites" is what we're naming the new folder.</div>
+          </div>
+
+          <div class="callout" style="margin-top:1.4rem;background:var(--green-dim);border-color:var(--green);">
+            <span class="callout-icon">🤫</span>
+            <div><strong style="color:var(--green);">Quiet success.</strong> Most commands don't print anything when they work. No news = good news. Run <span style="font-family:'IBM Plex Mono',monospace;color:var(--text);">ls</span> after to confirm Sites is there.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       SLIDE 09 — CD (GO INSIDE)
+  ════════════════════════════════════════════ -->
+  <div class="slide slide-surface" data-slide="9">
+    <div class="ch-bg-num">09</div>
+    <div class="inner" style="position:relative;z-index:2;">
+      <div class="slide-icon fade-up">🚪</div>
+      <span class="eyebrow fade-up">// Command 3 of 3</span>
+      <h2 class="fade-up">Type <span class="accent">cd Sites</span> to step inside</h2>
+      <div class="rule fade-up"></div>
+      <p class="lede fade-up" style="max-width:820px;">"cd" means <em>change directory</em>. It's like walking into a folder. Once you're inside, everything you do happens in there.</p>
+
+      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
+
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dot win-dot-r"></span>
+            <span class="win-dot win-dot-y"></span>
+            <span class="win-dot win-dot-g"></span>
+            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~/Sites</span>
+          </div>
+          <div class="term-body">
+            <div><span class="prompt">$</span> <span class="cmd">cd Sites</span></div>
+            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
+            <div class="comment"># empty — we just made it, so nothing's inside yet</div>
+            <div><span class="prompt">$</span> <span class="cursor"></span></div>
+            <div style="margin-top:1.2rem;color:var(--text-dimmer);font-size:0.78rem;">Look at the title bar &uarr;<br>It now says <span style="color:var(--green);">~/Sites</span> — you're inside.</div>
+          </div>
+        </div>
+
+        <div class="win">
+          <div class="win-bar">
+            <span class="win-dot win-dot-r"></span>
+            <span class="win-dot win-dot-y"></span>
+            <span class="win-dot win-dot-g"></span>
+            <span class="win-title">🔍&nbsp;&nbsp;Finder — Sites</span>
+          </div>
+          <div class="finder-body">
+            <div class="finder-sidebar">
+              <div class="sb-head">Favorites</div>
+              <div class="sb-row">🖥️&nbsp; iMac</div>
+              <div class="sb-row">🏠&nbsp; gael</div>
+              <div class="sb-row">📁&nbsp; Desktop</div>
+              <div class="sb-row">📁&nbsp; Documents</div>
+              <div class="sb-row active">📁&nbsp; Sites</div>
+            </div>
+            <div class="finder-main">
+              <div class="folder-icon">📁</div>
+              <div class="folder-name">Sites</div>
+              <div class="empty-note">// Empty · 0 items</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.6rem;max-width:200px;line-height:1.4;">Same folder. Two views. Terminal &amp; Finder are just different ways to look at the exact same thing.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="callout fade-up" style="margin-top:1.6rem;">
+        <span class="callout-icon">🤯</span>
+        <div><strong>Mind-blower:</strong> a folder is a folder. Whether you see it in Terminal (text) or Finder (icons), it's the same place on your hard drive.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       SLIDE 10 — HAND OFF TO CLAUDE
+  ════════════════════════════════════════════ -->
+  <div class="slide" data-slide="10">
+    <div class="ch-bg-num">10</div>
+    <div class="inner" style="position:relative;z-index:2;">
+      <div class="slide-icon fade-up">🤝</div>
+      <span class="eyebrow fade-up">// Terminal homework: done</span>
+      <h2 class="fade-up">Hand the keys<br>to <span class="accent">Claude</span></h2>
+      <div class="rule fade-up"></div>
+      <p class="lede fade-up" style="max-width:820px;">Your Sites folder exists. You won't open Terminal again for a while. Time to open Claude Code and tell it where to work.</p>
+
+      <div class="card fade-up" style="margin-top:2.5rem;padding:0;overflow:hidden;max-width:820px;">
+        <div style="background:#0f0f0f;padding:0.65rem 1.2rem;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:0.5rem;">
+          <span style="width:10px;height:10px;background:#FF5F57;border-radius:50%;"></span>
+          <span style="width:10px;height:10px;background:#FEBC2E;border-radius:50%;"></span>
+          <span style="width:10px;height:10px;background:#28C840;border-radius:50%;"></span>
+          <span style="margin-left:0.8rem;">Claude Code — say this</span>
+        </div>
+        <div style="padding:1.6rem 1.8rem;background:var(--surface);">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.8rem;">// You type:</div>
+          <p style="font-family:'Barlow',sans-serif;font-size:1.15rem;line-height:1.5;color:var(--text);">"From now on, always work in my Sites folder in my home directory. Save every project we build inside there. Never make new projects anywhere else."</p>
+        </div>
+      </div>
+
+      <div class="grid2 fade-up" style="margin-top:1.6rem;">
+        <div class="card card-green">
+          <span class="card-icon">✅</span>
+          <div class="card-num" style="color:var(--green);">// What this does</div>
+          <h3>Claude remembers</h3>
+          <p>From this point on, every time Claude makes a project, it knows to put it inside ~/Sites/. You won't have to say it again.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon">👋</span>
+          <div class="card-num">// What's next</div>
+          <h3>Bye, Terminal</h3>
+          <p>Quit Terminal. Open Claude Code. From now on, almost everything we build happens inside the Claude Code app.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+  <!-- ════════════════════════════════════════════
+       SLIDE 11 — WHERE PROJECTS LIVE
+  ════════════════════════════════════════════ -->
+  <div class="slide" data-slide="11">
+    <div class="ch-bg-num">11</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">📁</div>
       <span class="eyebrow fade-up">// Your stuff</span>
@@ -752,10 +1131,10 @@
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 07 — HOW TO TALK TO IT
+       SLIDE 12 — HOW TO TALK TO IT
   ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="7">
-    <div class="ch-bg-num">07</div>
+  <div class="slide slide-surface" data-slide="12">
+    <div class="ch-bg-num">12</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">🗯️</div>
       <span class="eyebrow fade-up">// The skill</span>
@@ -785,10 +1164,10 @@
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 08 — PLAN MODE vs AUTO
+       SLIDE 13 — PLAN MODE vs AUTO
   ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="8">
-    <div class="ch-bg-num">08</div>
+  <div class="slide" data-slide="13">
+    <div class="ch-bg-num">13</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">🧭</div>
       <span class="eyebrow fade-up">// Two ways to work</span>
@@ -822,10 +1201,10 @@
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 09 — APPROVALS YOU'LL SEE
+       SLIDE 14 — APPROVALS YOU'LL SEE
   ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="9">
-    <div class="ch-bg-num">09</div>
+  <div class="slide slide-surface" data-slide="14">
+    <div class="ch-bg-num">14</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">✋</div>
       <span class="eyebrow fade-up">// Pop-ups</span>
@@ -872,10 +1251,10 @@
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 10 — YOUR CLAUDE.md
+       SLIDE 15 — YOUR CLAUDE.md
   ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="10">
-    <div class="ch-bg-num">10</div>
+  <div class="slide" data-slide="15">
+    <div class="ch-bg-num">15</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">📝</div>
       <span class="eyebrow fade-up">// Set up your rules</span>
@@ -923,10 +1302,10 @@ and learning, not real work.
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 11 — YOUR FIRST PROJECT
+       SLIDE 16 — YOUR FIRST PROJECT
   ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="11">
-    <div class="ch-bg-num">11</div>
+  <div class="slide" data-slide="16">
+    <div class="ch-bg-num">16</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">🌟</div>
       <span class="eyebrow fade-up">// Today, one each</span>
@@ -970,10 +1349,10 @@ and learning, not real work.
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 12 — WHEN IT GETS STUCK
+       SLIDE 17 — WHEN IT GETS STUCK
   ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="12">
-    <div class="ch-bg-num">12</div>
+  <div class="slide slide-surface" data-slide="17">
+    <div class="ch-bg-num">17</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">🐛</div>
       <span class="eyebrow fade-up">// It will happen</span>
@@ -1012,10 +1391,10 @@ and learning, not real work.
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 13 — WHAT TO BUILD NEXT
+       SLIDE 18 — WHAT TO BUILD NEXT
   ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="13">
-    <div class="ch-bg-num">13</div>
+  <div class="slide" data-slide="18">
+    <div class="ch-bg-num">18</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">💡</div>
       <span class="eyebrow fade-up">// Looking ahead</span>
@@ -1042,10 +1421,10 @@ and learning, not real work.
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 14 — LOCAL ONLY
+       SLIDE 19 — LOCAL ONLY
   ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="14">
-    <div class="ch-bg-num">14</div>
+  <div class="slide slide-surface" data-slide="19">
+    <div class="ch-bg-num">19</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">🏠</div>
       <span class="eyebrow fade-up">// Today's rule</span>
@@ -1072,10 +1451,10 @@ and learning, not real work.
 
 
   <!-- ════════════════════════════════════════════
-       SLIDE 15 — CLOSING
+       SLIDE 20 — CLOSING
   ════════════════════════════════════════════ -->
-  <div class="slide slide-accent" data-slide="15">
-    <div class="ch-bg-num">15</div>
+  <div class="slide slide-accent" data-slide="20">
+    <div class="ch-bg-num">20</div>
     <div class="inner" style="position:relative;z-index:2;">
       <div class="slide-icon fade-up">👋</div>
       <span class="eyebrow fade-up" style="color:rgba(0,0,0,0.55);">// That's a wrap</span>
@@ -1103,6 +1482,11 @@ and learning, not real work.
     "You're the boss",
     'Safety rules',
     'One app',
+    'Meet Terminal',
+    'ls — list',
+    'mkdir — make',
+    'cd — go inside',
+    'Hand off to Claude',
     'Your folders',
     'How to ask',
     'Plan vs Auto',
