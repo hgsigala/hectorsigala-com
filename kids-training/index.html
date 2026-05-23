@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <base href="/kids-training/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Code Sundays</title>
   <meta name="robots" content="noindex, nofollow">
   <meta property="og:site_name" content="hectorsigala.com">
   <meta property="og:title" content="Claude Code Sundays">
-  <meta property="og:description" content="Sunday afternoon Claude Code classes with Gael and Ivan.">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
+  <meta property="og:description" content="Sunday Claude Code classes with Gael (9) and Ivan (16). Weekly decks + teacher guide.">
+  <link rel="icon" type="image/png" href="/kids-training/favicon.png">
+  <link rel="apple-touch-icon" href="/kids-training/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,7 +18,6 @@
       --bg:         #1a1a1a;
       --surface:    #242424;
       --surface-2:  #2c2c2c;
-      --surface-3:  #353535;
       --border:     rgba(255,255,255,0.09);
       --border-2:   rgba(255,255,255,0.16);
       --text:       #f0ede8;
@@ -29,15 +27,9 @@
       --accent-dim: rgba(232,64,28,0.12);
       --green:      #4abe88;
       --green-dim:  rgba(74,190,136,0.12);
-      --bad:        #c97070;
-      --bad-dim:    rgba(201,112,112,0.10);
-      --yellow:     #f0c34e;
-      --yellow-dim: rgba(240,195,78,0.14);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      height: 100%; overflow: hidden;
       background: var(--bg); color: var(--text);
       font-family: 'Barlow', system-ui, -apple-system, sans-serif;
       font-size: 15px; line-height: 1.55;
@@ -46,1526 +38,372 @@
     a { color: var(--accent); text-decoration: none; transition: opacity 0.15s; }
     a:hover { opacity: 0.8; }
 
-    /* ── Deck mechanics ─────────────────────── */
-    .deck {
-      height: 100vh; overflow-y: scroll;
-      scroll-snap-type: y mandatory; scroll-behavior: smooth;
-    }
-    .slide {
-      width: 100vw; min-height: 100vh;
-      scroll-snap-align: start;
-      display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-      padding: 96px 80px 60px;
-      position: relative; overflow: hidden;
-      background: var(--bg);
-    }
-    .slide-surface { background: #161616; }
-    .slide-accent { background: var(--accent); color: #0a0a0a; }
-    .slide-accent .eyebrow { color: rgba(0,0,0,0.55); }
-    .slide-accent p, .slide-accent li { color: rgba(0,0,0,0.78); }
-    .slide-accent .rule { background: rgba(0,0,0,0.45); }
-    .slide-accent .ch-bg-num { color: rgba(0,0,0,0.10); }
-    .inner { width: 100%; max-width: 1180px; }
+    .page { max-width: 980px; margin: 0 auto; padding: 0 2rem 6rem; }
 
-    /* ── Top bar ───────────────────────────── */
-    .topbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    /* Site header */
+    .site-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 32px;
-      background: rgba(26,26,26,0.96);
+      padding: 1.2rem 0;
       border-bottom: 1px solid var(--border);
-      pointer-events: none;
     }
-    .topbar > * { pointer-events: auto; }
-    .topbar-logo {
+    .site-header-logo {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1rem; font-weight: 800; letter-spacing: 0.1em;
+      font-size: 1.05rem; font-weight: 800; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--text);
-      text-decoration: none;
     }
-    .topbar-logo span { color: var(--accent); }
-    .topbar-right { display: flex; align-items: center; gap: 18px; }
-    .slide-counter {
+    .site-header-logo span { color: var(--accent); }
+    .site-header-meta {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.66rem; color: var(--text-dim);
-      letter-spacing: 0.1em; text-transform: uppercase;
-    }
-    .btn-pdf {
-      background: transparent; border: 1px solid var(--border-2);
-      color: var(--text-dim);
-      padding: 5px 14px; font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-pdf:hover { color: var(--text); border-color: var(--accent); }
-
-    /* ── Scroll progress bar ───────────────── */
-    .scroll-bar {
-      position: fixed; top: 0; left: 0; z-index: 250;
-      height: 2px; background: var(--accent);
-      width: 0%; transition: width 0.08s linear;
-      pointer-events: none;
-    }
-
-    /* ── Navdots ───────────────────────────── */
-    .navdots {
-      position: fixed; right: 22px; top: 50%;
-      transform: translateY(-50%); z-index: 200;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .nav-item {
-      display: flex; align-items: center; justify-content: flex-end;
-      gap: 14px; cursor: pointer; padding: 0; border: none;
-      background: none; text-align: right;
-    }
-    .nav-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; font-weight: 500;
-      color: transparent;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      white-space: nowrap; pointer-events: none;
-      transition: color 0.2s;
-    }
-    .navdots:hover .nav-label { color: rgba(255,255,255,0.35); pointer-events: auto; }
-    .navdots:hover .nav-item:hover .nav-label { color: var(--text); }
-    .navdots:hover .nav-item.active .nav-label { color: var(--accent); }
-    .dot {
-      width: 6px; height: 6px;
-      background: rgba(255,255,255,0.2);
-      transition: all 0.2s;
-    }
-    .nav-item:hover .dot { background: rgba(255,255,255,0.5); }
-    .nav-item.active .dot { background: var(--accent); width: 12px; }
-
-    /* ── Big icon banner ───────────────────── */
-    .slide-icon {
-      font-size: clamp(48px, 7vw, 76px);
-      line-height: 1;
-      margin-bottom: 14px;
-      display: block;
-      filter: drop-shadow(0 4px 18px rgba(0,0,0,0.4));
-    }
-
-    /* ── Typography ────────────────────────── */
-    .eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-      display: block;
-    }
-    h1 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(54px, 8.5vw, 130px);
-      font-weight: 900; line-height: 0.85;
-      letter-spacing: -0.005em;
+      font-size: 0.66rem; color: var(--text-dim); letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text);
-    }
-    h1 .slash { color: var(--accent); font-weight: 800; }
-    h2 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(36px, 5.5vw, 78px);
-      font-weight: 800; line-height: 0.92;
-      letter-spacing: 0;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-    h2 .accent { color: var(--accent); }
-    h3 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(20px, 1.9vw, 26px);
-      font-weight: 700; line-height: 1.1;
-      letter-spacing: 0.01em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-    p { font-size: clamp(14px, 1.15vw, 16.5px); line-height: 1.6; color: var(--text-dim); }
-    p.lede { font-size: clamp(16px, 1.5vw, 21px); line-height: 1.5; color: var(--text); }
-
-    .rule { width: 64px; height: 3px; background: var(--accent); margin: 22px 0 28px; }
-
-    .accent { color: var(--accent); }
-    .green  { color: var(--green); }
-    .dim    { color: var(--text-dim); }
-
-    /* ── Watermark slide number ───────────── */
-    .ch-bg-num {
-      position: absolute; right: 40px; top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(180px, 32vw, 460px);
-      font-weight: 900; line-height: 0.85;
-      color: rgba(255,255,255,0.03);
-      letter-spacing: -0.04em;
-      user-select: none; pointer-events: none;
-      z-index: 1;
-    }
-    .ch-bg-num-left { right: auto; left: -2vw; }
-
-    /* ── Card ──────────────────────────────── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 1.7rem 1.8rem;
-      transition: border-color 0.15s, transform 0.15s;
-      position: relative;
-    }
-    .card:hover { border-color: var(--border-2); }
-    .card-accent { background: var(--accent-dim); border-color: rgba(232,64,28,0.32); }
-    .card-green  { background: var(--green-dim);  border-color: rgba(74,190,136,0.32); }
-    .card-yellow { background: var(--yellow-dim); border-color: rgba(240,195,78,0.32); }
-    .card-bad    { background: var(--bad-dim);    border-color: rgba(201,112,112,0.28); }
-    .card h3 { margin-bottom: 0.7rem; }
-    .card-icon {
-      font-size: 2.2rem;
-      line-height: 1;
-      margin-bottom: 0.9rem;
-      display: block;
-    }
-    .card-num {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.45rem;
     }
 
-    /* ── Grid layouts ──────────────────────── */
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .grid2-wide { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
-    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
-
-    /* ── Numbered rules list ─────────────── */
-    .num-rules { display: flex; flex-direction: column; gap: 0; }
-    .num-rule {
-      display: flex; gap: 1.6rem; align-items: flex-start;
-      padding: 1.4rem 0;
+    /* Hero */
+    .hero {
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+      min-height: 380px;
       border-bottom: 1px solid var(--border);
     }
-    .num-rule:last-child { border-bottom: none; }
-    .num-rule-num {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 2.6rem; font-weight: 900;
-      color: var(--accent); line-height: 1;
-      flex-shrink: 0; min-width: 70px;
-    }
-    .num-rule-icon {
-      font-size: 2rem;
-      line-height: 1;
-      flex-shrink: 0;
-      margin-right: 0.4rem;
-    }
-    .num-rule h3 { margin-bottom: 0.4rem; }
-    .num-rule p { font-size: 0.95rem; }
-
-    /* ── Folder tree ───────────────────────── */
-    .folder-tree {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.95rem; line-height: 2;
-      color: var(--text-dim);
-    }
-    .folder-tree .folder    { color: var(--accent); font-weight: 600; }
-    .folder-tree .highlight { color: var(--green); font-weight: 600; }
-    .folder-tree .connector { color: rgba(255,255,255,0.18); }
-
-    /* ── Prompt boxes ──────────────────────── */
-    .prompt-box {
-      padding: 1.1rem 1.3rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.65;
-      border-left: 3px solid;
-    }
-    .prompt-bad  { background: var(--bad-dim);   border-color: var(--bad);    color: var(--text-dim); }
-    .prompt-good { background: var(--green-dim); border-color: var(--green); color: var(--text); }
-    .prompt-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      margin-bottom: 0.7rem;
-      display: block;
-    }
-    .prompt-label-bad  { color: var(--bad); }
-    .prompt-label-good { color: var(--green); }
-
-    /* ── Callout ──────────────────────────── */
-    .callout {
-      padding: 1rem 1.3rem;
-      font-size: 0.95rem; line-height: 1.6;
-      border-left: 3px solid var(--accent);
-      background: var(--accent-dim);
-      color: var(--text);
-      margin-top: 2rem;
-      display: flex; align-items: flex-start; gap: 0.9rem;
-    }
-    .callout strong { color: var(--accent); font-weight: 700; }
-    .callout .callout-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
-
-    /* ── Checks list ───────────────────────── */
-    ul.checks { list-style: none; display: flex; flex-direction: column; }
-    ul.checks li {
-      display: flex; align-items: flex-start; gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: clamp(15px, 1.3vw, 18px);
-      color: var(--text);
-      line-height: 1.5;
-    }
-    ul.checks li:last-child { border-bottom: none; }
-    ul.checks li::before {
-      content: '→'; color: var(--accent); font-weight: 700;
-      flex-shrink: 0; font-family: 'IBM Plex Mono', monospace;
-    }
-    ul.checks li .marker {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--green);
-      margin-right: 0.5rem;
-    }
-    ul.checks .q-icon {
-      font-size: 1.1rem;
-      flex-shrink: 0;
-      margin-right: 0.15rem;
-    }
-
-    /* ── Project track card (slide 8) ─ */
-    .track {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 2rem 1.8rem 1.8rem;
-      position: relative;
-    }
-    .track-tag {
-      position: absolute; top: 0; left: 0;
-      padding: 0.4rem 0.95rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: #0a0a0a;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .track-tag.gael { background: var(--accent); }
-    .track-tag.ivan { background: var(--green); }
-    .track-tag .ttx-icon { font-size: 0.95rem; }
-    .track-emoji {
-      position: absolute; top: 1.8rem; right: 1.6rem;
-      font-size: 2.2rem; line-height: 1; opacity: 0.85;
-    }
-    .track h3 { margin-top: 1.2rem; margin-bottom: 0.5rem; font-size: 1.7rem; }
-    .track .machine {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 1rem;
-    }
-    .track p { font-size: 0.94rem; margin-bottom: 0.7rem; }
-    .track .why {
-      font-size: 0.88rem; padding: 0.7rem 0.9rem;
-      background: rgba(255,255,255,0.03);
-      border-left: 2px solid var(--text-dim);
-      margin: 0.9rem 0;
-    }
-    .track .why strong { color: var(--text); }
-    .track ul { list-style: none; padding: 0; font-size: 0.88rem; }
-    .track ul li { padding: 0.35rem 0; color: var(--text-dim); }
-    .track ul li::before { content: '◆  '; color: var(--accent); font-size: 0.6rem; }
-
-    /* ── Single big tool card (slide 5) ──── */
-    .one-app {
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      padding: 2.5rem 2.5rem;
-      display: grid; grid-template-columns: auto 1fr;
-      gap: 2.2rem; align-items: center;
-      max-width: 920px;
-      position: relative; overflow: hidden;
-    }
-    .one-app::before {
-      content: 'CLAUDE\00000ACODE';
-      position: absolute; right: -1rem; bottom: -2rem;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 12rem; font-weight: 900;
-      color: rgba(255,255,255,0.03);
-      line-height: 0.85; letter-spacing: -0.04em;
-      white-space: pre; text-transform: uppercase;
-      pointer-events: none;
-    }
-    .one-app-icon {
-      width: 140px; height: 140px;
+    .hero-left {
       background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem 2.5rem;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      position: relative;
+    }
+    .hero-left::before {
+      content: "CLAUDE CODE SUNDAYS\00000A1 HOUR · EVERY SUNDAY\00000AGAEL · 9 \00B7 IVAN · 16";
+      position: absolute; top: 1.5rem; left: 2.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: rgba(0,0,0,0.45); letter-spacing: 0.08em;
+      white-space: pre; line-height: 1.65;
+    }
+    .hero h1 {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 4rem; font-weight: 900;
+      font-size: clamp(3rem, 6.5vw, 5rem);
+      font-weight: 900;
       color: #0a0a0a;
-      flex-shrink: 0;
-      position: relative; z-index: 2;
-    }
-    .one-app-body { position: relative; z-index: 2; }
-    .one-app-body h3 {
-      font-size: clamp(28px, 3vw, 40px);
-      margin-bottom: 0.4rem;
-    }
-    .one-app-body p { font-size: 1rem; }
-    .one-app-stats {
-      display: flex; gap: 0; margin-top: 1.2rem;
-      border-top: 1px solid var(--border);
-      padding-top: 1rem;
-    }
-    .one-app-stat {
-      flex: 1; padding-right: 1rem;
-      border-right: 1px solid var(--border);
-    }
-    .one-app-stat:last-child { border-right: none; padding-right: 0; padding-left: 1rem; }
-    .one-app-stat .label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .one-app-stat .val {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1.1rem; font-weight: 800;
-      color: var(--text); margin-top: 0.15rem;
+      letter-spacing: -0.005em;
+      line-height: 0.88;
       text-transform: uppercase;
+      margin-bottom: 0.7rem;
     }
-
-    /* ── Terminal / Finder window mockups ── */
-    .win {
-      background: #0d0d0d;
-      border: 1px solid var(--border-2);
-      overflow: hidden;
-      display: flex; flex-direction: column;
+    .hero h1 .slash { color: rgba(0,0,0,0.35); font-weight: 800; }
+    .hero .hero-sub {
+      color: rgba(0,0,0,0.65);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      max-width: 380px;
+      line-height: 1.45;
     }
-    .win-bar {
-      background: #1c1c1c;
-      padding: 0.55rem 0.85rem;
-      display: flex; align-items: center; gap: 6px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+    .hero-right {
+      background: #111;
+      padding: 2.2rem 2.2rem 1.8rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+      gap: 1.5rem;
     }
-    .win-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-    .win-dot-r { background: #ff5f57; }
-    .win-dot-y { background: #febc2e; }
-    .win-dot-g { background: #28c840; }
-    .win-title {
+    .hero-right-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem; color: var(--text-dim);
-      margin-left: 0.6rem; letter-spacing: 0.04em;
-    }
-    .term-body {
-      padding: 1rem 1.2rem;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.85rem; line-height: 1.95;
-      color: var(--text);
-      flex: 1;
-    }
-    .term-body .prompt { color: var(--green); user-select: none; margin-right: 0.55rem; }
-    .term-body .cmd    { color: var(--accent); }
-    .term-body .comment{ color: var(--text-dimmer); }
-    .term-body .cursor {
-      display: inline-block; width: 9px; height: 16px;
-      background: var(--green); vertical-align: text-bottom;
-      animation: blink 1.2s step-end infinite;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    .finder-body {
-      display: grid; grid-template-columns: 130px 1fr;
-      flex: 1; min-height: 200px;
-    }
-    .finder-sidebar {
-      background: #181818;
-      padding: 0.7rem 0.6rem;
-      border-right: 1px solid var(--border);
-      font-family: 'Barlow', sans-serif;
-      font-size: 0.78rem; line-height: 2;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--text-dim);
     }
-    .finder-sidebar .sb-head {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.55rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--text-dimmer);
-      margin-top: 0.5rem; margin-bottom: 0.2rem;
-    }
-    .finder-sidebar .sb-head:first-child { margin-top: 0; }
-    .finder-sidebar .sb-row { padding: 0 0.4rem; border-radius: 4px; }
-    .finder-sidebar .sb-row.active {
-      background: var(--accent); color: #0a0a0a; font-weight: 600;
-    }
-    .finder-main {
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 0.6rem;
-      padding: 1.2rem; text-align: center;
-      background: #161616;
-    }
-    .finder-main .folder-icon { font-size: 3.4rem; line-height: 1; }
-    .finder-main .folder-name {
-      font-family: 'Barlow', sans-serif;
-      font-size: 0.95rem; color: var(--text);
-    }
-    .finder-main .empty-note {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem; color: var(--text-dimmer);
-      letter-spacing: 0.1em; text-transform: uppercase;
-      margin-top: 0.3rem;
-    }
-
-    /* ── Command keys ──────────────────── */
-    .cmd-key {
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 1rem 1.2rem;
-      display: flex; flex-direction: column; gap: 0.35rem;
-    }
-    .cmd-key .cmd-name {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.15rem; font-weight: 700; color: var(--accent);
-    }
-    .cmd-key .cmd-desc {
+    .hero-quote {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.02em;
+      font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+      font-weight: 700; line-height: 1.2;
       color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.005em;
     }
-    .cmd-key .cmd-example {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem; color: var(--text-dim);
-      letter-spacing: 0.02em;
-    }
-
-    /* ── Stat row ──────────────────────── */
-    .stat-row {
-      display: flex; gap: 0; margin-top: 2.5rem;
+    .hero-quote em { color: var(--accent); font-style: normal; }
+    .hero-stats {
+      display: flex; gap: 0;
       border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      max-width: 720px;
     }
-    .stat-cell {
-      flex: 1; padding: 0.9rem 1.2rem;
+    .hero-stat {
+      flex: 1; padding: 0.85rem 0.9rem;
       border-right: 1px solid var(--border);
     }
-    .stat-cell:last-child { border-right: none; }
-    .stat-cell .label {
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat .hs-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.58rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--text-dim);
+      font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-dim);
     }
-    .stat-cell .val {
+    .hero-stat .hs-val {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1.2rem; font-weight: 800;
-      text-transform: uppercase; color: var(--text);
+      font-size: 1.15rem; font-weight: 800; color: var(--text);
+      text-transform: uppercase; letter-spacing: 0.02em;
       margin-top: 0.15rem;
     }
-    .stat-cell .val.hot { color: var(--accent); }
 
-    /* ── Scroll cue ────────────────────── */
-    @keyframes float {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%      { transform: translateX(-50%) translateY(6px); }
+    /* Chapter */
+    .chapter {
+      border-top: 1px solid var(--border);
+      position: relative;
     }
-    .scroll-cue {
-      position: absolute; bottom: 28px; left: 50%;
-      transform: translateX(-50%);
-      animation: float 2.5s ease-in-out infinite;
+    .chapter:first-of-type { border-top: none; }
+    .chapter-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 2rem;
+      padding: 3rem 0 1.4rem;
+      position: relative; overflow: hidden;
+    }
+    .chapter-header-inner { flex: 1; }
+    .chapter-number {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem; letter-spacing: 0.18em;
-      color: var(--text-dimmer);
+      font-size: 0.62rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--accent); margin-bottom: 0.4rem;
+    }
+    .chapter-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+      font-weight: 800; color: var(--text);
+      letter-spacing: 0.01em; line-height: 1;
       text-transform: uppercase;
     }
-    .slide-accent .scroll-cue { color: rgba(0,0,0,0.5); }
-
-    /* ── Fade-up ───────────────────────── */
-    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-    .fade-up:nth-child(2) { transition-delay: 0.08s; }
-    .fade-up:nth-child(3) { transition-delay: 0.16s; }
-    .fade-up:nth-child(4) { transition-delay: 0.24s; }
-    .fade-up:nth-child(5) { transition-delay: 0.32s; }
-
-    @media (max-width: 900px) {
-      .slide { padding: 88px 24px 56px; }
-      .grid2, .grid2-wide, .grid3 { grid-template-columns: 1fr; gap: 1rem; }
-      .grid4 { grid-template-columns: 1fr 1fr; }
-      .ch-bg-num { font-size: clamp(140px, 50vw, 280px); }
-      .navdots { display: none; }
-      .topbar { padding: 12px 18px; }
-      .one-app { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.5rem; }
-      .one-app-icon { width: 90px; height: 90px; font-size: 2.4rem; }
+    .chapter-subtitle {
+      font-size: 0.92rem; color: var(--text-dim);
+      margin-top: 0.55rem;
+      max-width: 640px; line-height: 1.55;
     }
-    @media (max-width: 768px) {
-      html, body { height: auto; overflow: auto; overflow-x: hidden; }
-      .deck { height: auto; overflow: visible; scroll-snap-type: none; }
-      .slide { height: auto; min-height: 100svh; scroll-snap-align: none; justify-content: flex-start; }
-      h1 { font-size: clamp(48px, 14vw, 80px); }
-      h2 { font-size: clamp(32px, 9vw, 52px); }
-      .stat-row { flex-direction: column; }
-      .stat-cell { border-right: none; border-bottom: 1px solid var(--border); }
-      .stat-cell:last-child { border-bottom: none; }
+    .ch-bg-num {
+      position: absolute; right: -0.5rem; top: 50%; transform: translateY(-50%);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(7rem, 14vw, 10rem); font-weight: 900;
+      color: rgba(255,255,255,0.04); line-height: 1;
+      user-select: none; pointer-events: none; letter-spacing: -0.02em;
     }
 
-    @media print {
-      @page { size: landscape; margin: 0; }
-      html, body { height: auto; overflow: visible; }
-      .deck { height: auto; overflow: visible; scroll-snap-type: none; }
-      .slide { page-break-after: always; break-after: page; scroll-snap-align: none; padding: 56px 64px; }
-      .topbar, .navdots, .scroll-cue, .scroll-bar { display: none !important; }
-      .fade-up { opacity: 1 !important; transform: none !important; }
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Week list (numbered project-list style) */
+    .week-list {
+      list-style: none;
+      border-top: 1px solid var(--border);
+    }
+    .week-list li { border-bottom: 1px solid var(--border); }
+    .week-list a {
+      display: flex; align-items: stretch;
+      color: var(--text); transition: background 0.15s;
+    }
+    .week-list a:hover { background: var(--surface); opacity: 1; }
+    .week-list a:hover .week-title { color: var(--accent); }
+    .week-num {
+      flex-shrink: 0;
+      width: 86px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--text-dim);
+      display: flex; align-items: center; justify-content: center;
+      border-right: 1px solid var(--border);
+      padding: 1.3rem 0;
+      text-align: center;
+    }
+    .week-body {
+      flex: 1;
+      padding: 1.3rem 1.4rem;
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .week-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.015em;
+      color: var(--text); transition: color 0.15s;
+    }
+    .week-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .week-desc {
+      font-size: 0.88rem; color: var(--text-dim);
+      line-height: 1.5;
+      margin-top: 0.2rem;
+    }
+    .week-status {
+      flex-shrink: 0;
+      width: 110px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dimmer);
+      border-left: 1px solid var(--border);
+    }
+    .week-status.live { color: var(--green); }
+    .week-status.upcoming { color: var(--text-dimmer); }
+
+    /* Resource cards */
+    .resources-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .resource-card {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.6rem 1.4rem;
+      display: flex; flex-direction: column; gap: 0.55rem;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+    .resource-card:last-child { border-right: none; }
+    .resource-card:hover { background: var(--surface); opacity: 1; }
+    .resource-card:hover .resource-title { color: var(--accent); }
+    .resource-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-dim);
+    }
+    .resource-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.01em;
+      color: var(--text); transition: color 0.15s;
+    }
+    .resource-desc {
+      font-size: 0.85rem; color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .resource-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; color: var(--text-dimmer);
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-dim);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .footer a { color: var(--text-dim); }
+    .footer a:hover { color: var(--accent); }
+
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 2.2rem 1.5rem; min-height: 240px; }
+      .hero-right { padding: 1.8rem 1.5rem; }
+      .page { padding: 0 1.2rem 4rem; }
+      .week-num { width: 60px; font-size: 0.62rem; }
+      .week-status { width: 70px; font-size: 0.55rem; }
+      .resources-row { grid-template-columns: 1fr; }
+      .resource-card { border-right: none; }
     }
   </style>
 </head>
 <body>
 
-<div class="scroll-bar" id="scrollBar"></div>
+  <div class="page">
 
-<div class="topbar">
-  <a class="topbar-logo" href="/">Hector<span>/</span>Sigala</a>
-  <div class="topbar-right">
-    <span class="slide-counter" id="counter">01 / 20</span>
-  </div>
-</div>
-
-<nav class="navdots" id="navdots"></nav>
-
-<div class="deck" id="deck">
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 01 — HERO
-  ════════════════════════════════════════════ -->
-  <div class="slide" id="hero" data-slide="1">
-    <div class="ch-bg-num ch-bg-num-left">01</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon">🚀</div>
-      <span class="eyebrow">Sundays · 1 hour · Dad teaches</span>
-      <h1>Claude Code<br><span class="slash">/</span>Sundays</h1>
-      <div class="rule"></div>
-      <p class="lede" style="max-width:640px;">Gael <span class="accent">&amp;</span> Ivan, learning to build the things only they would want.</p>
-
-      <div class="stat-row">
-        <div class="stat-cell">
-          <div class="label">// Cohort</div>
-          <div class="val">🧒 Gael · 9</div>
-        </div>
-        <div class="stat-cell">
-          <div class="label">// Cohort</div>
-          <div class="val">👦 Ivan · 16</div>
-        </div>
-        <div class="stat-cell">
-          <div class="label">// Week</div>
-          <div class="val hot">01</div>
-        </div>
-      </div>
+    <div class="site-header">
+      <div class="site-header-logo"><a href="/" style="color:inherit;">Hector<span>/</span>Sigala</a></div>
+      <div class="site-header-meta">Claude Code Sundays</div>
     </div>
-    <div class="scroll-cue">↓ Scroll</div>
-  </div>
 
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 02 — WHAT IS IT
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="2">
-    <div class="ch-bg-num">02</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">💬</div>
-      <span class="eyebrow fade-up">// The big idea</span>
-      <h2 class="fade-up">You tell it what to build.<br><span class="accent">It writes the code.</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">Claude Code is an app that builds websites and apps for you. You talk to it in plain English — like texting a friend who happens to be a really fast coder — and it builds whatever you ask.</p>
-
-      <div class="grid2 fade-up" style="margin-top:3rem;">
-        <div class="prompt-box prompt-bad">
-          <span class="prompt-label prompt-label-bad">🗣️&nbsp;&nbsp;// You say</span>
-          "Make a website with 4 buttons. Each one plays a different fart noise when I click it. Black background, big red buttons."
-        </div>
-        <div class="prompt-box prompt-good">
-          <span class="prompt-label prompt-label-good">⚡&nbsp;&nbsp;// It does</span>
-          Creates a folder, writes the HTML, writes the CSS, wires up the JavaScript, finds 4 fart sounds, and opens the page in your browser. About 30 seconds.
-        </div>
+    <div class="hero">
+      <div class="hero-left">
+        <h1>Claude Code<br><span class="slash">/</span>Sundays</h1>
+        <div class="hero-sub">Building things with my kids on Sunday afternoons</div>
       </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 03 — YOU'RE THE BOSS
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="3">
-    <div class="ch-bg-num">03</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">👑</div>
-      <span class="eyebrow fade-up">// Who does what</span>
-      <h2 class="fade-up">You're the <span class="accent">boss</span>.<br>It's the worker.</h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:680px;">Claude Code can write code faster than anyone on Earth. But it doesn't know what <em>you</em> want. That's your job.</p>
-
-      <div class="grid3 fade-up" style="margin-top:3rem;">
-        <div class="card">
-          <span class="card-icon">🧠</span>
-          <div class="card-num">// You</div>
-          <h3>Decide what to build</h3>
-          <p>Pick the idea. The weirder and more "yours," the better. Nobody else can do this part.</p>
-        </div>
-        <div class="card card-accent">
-          <span class="card-icon">🤖</span>
-          <div class="card-num" style="color:var(--accent);">// Claude</div>
-          <h3>Writes the code</h3>
-          <p>Like having a really good coder who never gets tired and never says "that's a dumb idea."</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">👀</span>
-          <div class="card-num">// You again</div>
-          <h3>Test it yourself</h3>
-          <p>Open the page. Click around. Tell it what's wrong. Don't trust "it works" — go check.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 04 — THREE SAFETY RULES
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-accent" data-slide="4">
-    <div class="ch-bg-num">04</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🛡️</div>
-      <span class="eyebrow fade-up" style="color:rgba(0,0,0,0.55);">// Three rules. Always.</span>
-      <h2 class="fade-up" style="color:#0a0a0a;">Don't skip these.<br>Ever.</h2>
-      <div class="rule fade-up"></div>
-
-      <div class="num-rules fade-up" style="margin-top:2rem;max-width:920px;border-top:1px solid rgba(0,0,0,0.18);">
-        <div class="num-rule" style="border-color:rgba(0,0,0,0.18);">
-          <div class="num-rule-num" style="color:#0a0a0a;">01</div>
-          <div class="num-rule-icon">🔒</div>
-          <div>
-            <h3 style="color:#0a0a0a;">Don't type real personal info into Claude</h3>
-            <p style="color:rgba(0,0,0,0.7);">No home address, no phone numbers, no passwords, no school logins, no real credit card numbers. If you need fake test data, ask Dad and we'll make it up together.</p>
-          </div>
-        </div>
-        <div class="num-rule" style="border-color:rgba(0,0,0,0.18);">
-          <div class="num-rule-num" style="color:#0a0a0a;">02</div>
-          <div class="num-rule-icon">🚨</div>
-          <div>
-            <h3 style="color:#0a0a0a;">If something feels weird, tell Dad right away</h3>
-            <p style="color:rgba(0,0,0,0.7);">If a website you built shows something scary, if Claude asks you to do something that feels off, or you just have a bad feeling — come find me. No project is more important than that.</p>
-          </div>
-        </div>
-        <div class="num-rule" style="border-color:rgba(0,0,0,0);">
-          <div class="num-rule-num" style="color:#0a0a0a;">03</div>
-          <div class="num-rule-icon">👨‍👦</div>
-          <div>
-            <h3 style="color:#0a0a0a;">Show family first before sharing anywhere</h3>
-            <p style="color:rgba(0,0,0,0.7);">The things you build are <em>yours</em>. Don't post them on YouTube, Discord, TikTok, Reddit, or send them to strangers. Show your family first, and we'll decide together if and how to share.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 05 — ONE APP
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="5">
-    <div class="ch-bg-num">05</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">⚡</div>
-      <span class="eyebrow fade-up">// Your toolkit</span>
-      <h2 class="fade-up">One app.<br><span class="accent">That's it.</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">For most of the work, just one tool: the <strong style="color:var(--text);">Claude Code app</strong>. You open it, you type, it builds. We'll touch Terminal <em>once</em> in a minute to set up your Sites folder &mdash; then it's all Claude from there.</p>
-
-      <div class="one-app fade-up" style="margin-top:2.5rem;">
-        <div class="one-app-icon">CC</div>
-        <div class="one-app-body">
-          <div class="card-num" style="margin-bottom:0.4rem;">// THE only tool</div>
-          <h3>Claude Code</h3>
-          <p>Open it. Type what you want to build. Watch it build. That's the whole interface.</p>
-          <div class="one-app-stats">
-            <div class="one-app-stat">
-              <div class="label">// Plan</div>
-              <div class="val">Pro · $20/mo</div>
-            </div>
-            <div class="one-app-stat">
-              <div class="label">// Gael's seat</div>
-              <div class="val">iMac 🖥️</div>
-            </div>
-            <div class="one-app-stat">
-              <div class="label">// Ivan's seat</div>
-              <div class="val">MacBook 💻</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">💸</span>
-        <div><strong>Your subscription is your subscription.</strong> Each of you has your own $20/month Claude Code Pro plan. Use it like crazy — that's what it's for.</div>
-      </div>
-
-      <p class="fade-up" style="margin-top:1.5rem;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.04em;">// Tiny bit of Terminal next slide. VS Code + GitHub come in later weeks.</p>
-    </div>
-  </div>
-
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 06 — MEET TERMINAL
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="6">
-    <div class="ch-bg-num">06</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">⌨️</div>
-      <span class="eyebrow fade-up">// Meet Terminal · first time</span>
-      <h2 class="fade-up">Open the <span class="accent">Terminal</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">Terminal is a window where you can type instructions to your computer. It's just an app &mdash; like Safari or Mail. Nothing scary.</p>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
-
+      <div class="hero-right">
         <div>
-          <div class="card-num" style="margin-bottom:0.8rem;">// How to open it</div>
-          <div class="num-rules" style="border-top:1px solid var(--border);">
-            <div class="num-rule">
-              <div class="num-rule-num">01</div>
-              <div>
-                <h3>Hold Cmd, press Space</h3>
-                <p>That opens Spotlight, the little search bar in the middle of your screen.</p>
-              </div>
-            </div>
-            <div class="num-rule">
-              <div class="num-rule-num">02</div>
-              <div>
-                <h3>Type "Terminal"</h3>
-                <p>Spotlight finds the app instantly.</p>
-              </div>
-            </div>
-            <div class="num-rule" style="border-bottom:none;">
-              <div class="num-rule-num">03</div>
-              <div>
-                <h3>Hit Enter</h3>
-                <p>Terminal opens. You'll see a window with a blinking cursor.</p>
-              </div>
-            </div>
+          <div class="hero-right-label">// The curriculum</div>
+          <p class="hero-quote" style="margin-top:0.6rem;">One hour. <em>Every</em> Sunday. Each kid leaves with something they built themselves.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hs-label">Cohort</div>
+            <div class="hs-val">Gael · Ivan</div>
           </div>
-        </div>
-
-        <div class="win">
-          <div class="win-bar">
-            <span class="win-dot win-dot-r"></span>
-            <span class="win-dot win-dot-y"></span>
-            <span class="win-dot win-dot-g"></span>
-            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
+          <div class="hero-stat">
+            <div class="hs-label">Format</div>
+            <div class="hs-val">1 hr / wk</div>
           </div>
-          <div class="term-body">
-            <div class="comment"># this is what it looks like when it opens</div>
-            <div><span class="prompt">$</span> <span class="cursor"></span></div>
-            <div style="margin-top:1.5rem;color:var(--text-dimmer);font-size:0.78rem;">The <span style="color:var(--green);">$</span> is just saying "ready for you to type."</div>
+          <div class="hero-stat">
+            <div class="hs-label">Started</div>
+            <div class="hs-val">May 2026</div>
           </div>
-        </div>
-
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">🧘</span>
-        <div><strong>Don't panic.</strong> The black-and-text window looks like hacker movies. It isn't. We only need 3 commands today, and we'll go one at a time.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 07 — LS (LIST STUFF)
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="7">
-    <div class="ch-bg-num">07</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">👀</div>
-      <span class="eyebrow fade-up">// Command 1 of 3</span>
-      <h2 class="fade-up">Type <span class="accent">ls</span> and hit Enter</h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">"ls" means <em>list stuff</em>. It shows you everything inside the folder you're standing in right now. Try it.</p>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
-
-        <div class="win">
-          <div class="win-bar">
-            <span class="win-dot win-dot-r"></span>
-            <span class="win-dot win-dot-y"></span>
-            <span class="win-dot win-dot-g"></span>
-            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
-          </div>
-          <div class="term-body">
-            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
-            <div style="color:var(--text-dim);line-height:1.7;">Applications&nbsp;&nbsp;Desktop&nbsp;&nbsp;Documents</div>
-            <div style="color:var(--text-dim);line-height:1.7;">Downloads&nbsp;&nbsp;Movies&nbsp;&nbsp;Music</div>
-            <div style="color:var(--text-dim);line-height:1.7;">Pictures&nbsp;&nbsp;Public</div>
-            <div><span class="prompt">$</span> <span class="cursor"></span></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="cmd-key" style="background:var(--surface);border-color:var(--border-2);">
-            <div class="cmd-name">ls</div>
-            <div class="cmd-desc">Short for "list"</div>
-            <div class="cmd-example">Lists every folder and file in the place where you're standing.</div>
-          </div>
-          <p style="margin-top:1.2rem;font-size:0.95rem;line-height:1.55;color:var(--text-dim);">When you first open Terminal, you're standing in your <strong style="color:var(--text);">home folder</strong>. <span style="color:var(--accent);font-family:'IBM Plex Mono',monospace;">ls</span> shows the same stuff you'd see if you opened Finder and clicked your name.</p>
-
-          <div class="callout" style="margin-top:1.4rem;">
-            <span class="callout-icon">🎯</span>
-            <div><strong>Try it now:</strong> type <span style="font-family:'IBM Plex Mono',monospace;color:var(--text);">ls</span> and hit Enter. Read what shows up out loud.</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 08 — MKDIR (MAKE A FOLDER)
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="8">
-    <div class="ch-bg-num">08</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">📁</div>
-      <span class="eyebrow fade-up">// Command 2 of 3</span>
-      <h2 class="fade-up">Type <span class="accent">mkdir Sites</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">"mkdir" means <em>make directory</em>. "Directory" is a fancy word for folder. So this command makes a brand new folder called <strong style="color:var(--text);">Sites</strong>.</p>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
-
-        <div class="win">
-          <div class="win-bar">
-            <span class="win-dot win-dot-r"></span>
-            <span class="win-dot win-dot-y"></span>
-            <span class="win-dot win-dot-g"></span>
-            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~</span>
-          </div>
-          <div class="term-body">
-            <div><span class="prompt">$</span> <span class="cmd">mkdir Sites</span></div>
-            <div class="comment"># nothing happens? that's how Terminal says "OK, done."</div>
-            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
-            <div style="color:var(--text-dim);line-height:1.7;">Applications&nbsp;&nbsp;Desktop&nbsp;&nbsp;Documents</div>
-            <div style="color:var(--text-dim);line-height:1.7;">Downloads&nbsp;&nbsp;Movies&nbsp;&nbsp;Music</div>
-            <div style="color:var(--text-dim);line-height:1.7;">Pictures&nbsp;&nbsp;Public&nbsp;&nbsp;<span style="color:var(--green);">Sites</span> &larr; new!</div>
-            <div><span class="prompt">$</span> <span class="cursor"></span></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="cmd-key" style="background:var(--surface);border-color:var(--border-2);">
-            <div class="cmd-name">mkdir Sites</div>
-            <div class="cmd-desc">Make a folder called Sites</div>
-            <div class="cmd-example">"mkdir" = make directory. "Sites" is what we're naming the new folder.</div>
-          </div>
-
-          <div class="callout" style="margin-top:1.4rem;background:var(--green-dim);border-color:var(--green);">
-            <span class="callout-icon">🤫</span>
-            <div><strong style="color:var(--green);">Quiet success.</strong> Most commands don't print anything when they work. No news = good news. Run <span style="font-family:'IBM Plex Mono',monospace;color:var(--text);">ls</span> after to confirm Sites is there.</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 09 — CD (GO INSIDE)
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="9">
-    <div class="ch-bg-num">09</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🚪</div>
-      <span class="eyebrow fade-up">// Command 3 of 3</span>
-      <h2 class="fade-up">Type <span class="accent">cd Sites</span> to step inside</h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">"cd" means <em>change directory</em>. It's like walking into a folder. Once you're inside, everything you do happens in there.</p>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;align-items:start;">
-
-        <div class="win">
-          <div class="win-bar">
-            <span class="win-dot win-dot-r"></span>
-            <span class="win-dot win-dot-y"></span>
-            <span class="win-dot win-dot-g"></span>
-            <span class="win-title">⌨️&nbsp;&nbsp;Terminal — gael@iMac ~/Sites</span>
-          </div>
-          <div class="term-body">
-            <div><span class="prompt">$</span> <span class="cmd">cd Sites</span></div>
-            <div><span class="prompt">$</span> <span class="cmd">ls</span></div>
-            <div class="comment"># empty — we just made it, so nothing's inside yet</div>
-            <div><span class="prompt">$</span> <span class="cursor"></span></div>
-            <div style="margin-top:1.2rem;color:var(--text-dimmer);font-size:0.78rem;">Look at the title bar &uarr;<br>It now says <span style="color:var(--green);">~/Sites</span> — you're inside.</div>
-          </div>
-        </div>
-
-        <div class="win">
-          <div class="win-bar">
-            <span class="win-dot win-dot-r"></span>
-            <span class="win-dot win-dot-y"></span>
-            <span class="win-dot win-dot-g"></span>
-            <span class="win-title">🔍&nbsp;&nbsp;Finder — Sites</span>
-          </div>
-          <div class="finder-body">
-            <div class="finder-sidebar">
-              <div class="sb-head">Favorites</div>
-              <div class="sb-row">🖥️&nbsp; iMac</div>
-              <div class="sb-row">🏠&nbsp; gael</div>
-              <div class="sb-row">📁&nbsp; Desktop</div>
-              <div class="sb-row">📁&nbsp; Documents</div>
-              <div class="sb-row active">📁&nbsp; Sites</div>
-            </div>
-            <div class="finder-main">
-              <div class="folder-icon">📁</div>
-              <div class="folder-name">Sites</div>
-              <div class="empty-note">// Empty · 0 items</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:0.6rem;max-width:200px;line-height:1.4;">Same folder. Two views. Terminal &amp; Finder are just different ways to look at the exact same thing.</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="callout fade-up" style="margin-top:1.6rem;">
-        <span class="callout-icon">🤯</span>
-        <div><strong>Mind-blower:</strong> a folder is a folder. Whether you see it in Terminal (text) or Finder (icons), it's the same place on your hard drive.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 10 — HAND OFF TO CLAUDE
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="10">
-    <div class="ch-bg-num">10</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🤝</div>
-      <span class="eyebrow fade-up">// Terminal homework: done</span>
-      <h2 class="fade-up">Hand the keys<br>to <span class="accent">Claude</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">Your Sites folder exists. You won't open Terminal again for a while. Time to open Claude Code and tell it where to work.</p>
-
-      <div class="card fade-up" style="margin-top:2.5rem;padding:0;overflow:hidden;max-width:820px;">
-        <div style="background:#0f0f0f;padding:0.65rem 1.2rem;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:0.5rem;">
-          <span style="width:10px;height:10px;background:#FF5F57;border-radius:50%;"></span>
-          <span style="width:10px;height:10px;background:#FEBC2E;border-radius:50%;"></span>
-          <span style="width:10px;height:10px;background:#28C840;border-radius:50%;"></span>
-          <span style="margin-left:0.8rem;">Claude Code — say this</span>
-        </div>
-        <div style="padding:1.6rem 1.8rem;background:var(--surface);">
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.8rem;">// You type:</div>
-          <p style="font-family:'Barlow',sans-serif;font-size:1.15rem;line-height:1.5;color:var(--text);">"From now on, always work in my Sites folder in my home directory. Save every project we build inside there. Never make new projects anywhere else."</p>
-        </div>
-      </div>
-
-      <div class="grid2 fade-up" style="margin-top:1.6rem;">
-        <div class="card card-green">
-          <span class="card-icon">✅</span>
-          <div class="card-num" style="color:var(--green);">// What this does</div>
-          <h3>Claude remembers</h3>
-          <p>From this point on, every time Claude makes a project, it knows to put it inside ~/Sites/. You won't have to say it again.</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">👋</span>
-          <div class="card-num">// What's next</div>
-          <h3>Bye, Terminal</h3>
-          <p>Quit Terminal. Open Claude Code. From now on, almost everything we build happens inside the Claude Code app.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 11 — WHERE PROJECTS LIVE
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="11">
-    <div class="ch-bg-num">11</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">📁</div>
-      <span class="eyebrow fade-up">// Your stuff</span>
-      <h2 class="fade-up">Each project gets<br>its own <span class="accent">folder</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">You each have your own computer with its own <strong style="color:var(--text);">Sites</strong> folder. Every project Claude builds gets a fresh folder inside. Tidy beats messy.</p>
-
-      <div class="grid2 fade-up" style="margin-top:3rem;">
-        <div class="card card-accent">
-          <span class="card-icon">🖥️</span>
-          <div class="card-num">// Gael · iMac</div>
-          <h3 style="margin-bottom:0.9rem;">Gael's Sites</h3>
-          <div class="folder-tree" style="font-size:0.88rem;">
-            <div><span class="folder">Sites/</span></div>
-            <div><span class="connector">&nbsp;&nbsp;├─</span> <span class="highlight">all-about-me/</span> &nbsp;⭐</div>
-            <div><span class="connector">&nbsp;&nbsp;└─</span> clicker-game/</div>
-          </div>
-        </div>
-        <div class="card card-green">
-          <span class="card-icon">💻</span>
-          <div class="card-num" style="color:var(--green);">// Ivan · MacBook</div>
-          <h3 style="margin-bottom:0.9rem;">Ivan's Sites</h3>
-          <div class="folder-tree" style="font-size:0.88rem;">
-            <div><span class="folder" style="color:var(--green);">Sites/</span></div>
-            <div><span class="connector">&nbsp;&nbsp;├─</span> <span class="highlight">homework-tracker/</span> &nbsp;⭐</div>
-            <div><span class="connector">&nbsp;&nbsp;└─</span> snake-game/</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">🪄</span>
-        <div><strong>How to make one:</strong> just tell Claude Code <em>"Make a new project called all-about-me in my Sites folder."</em> It creates the folder, sets up the files, and tells you where everything is.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 12 — HOW TO TALK TO IT
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="12">
-    <div class="ch-bg-num">12</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🗯️</div>
-      <span class="eyebrow fade-up">// The skill</span>
-      <h2 class="fade-up">How to <span class="accent">talk to Claude</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">More detail = better result. Describe what you want like you'd describe it to a friend who can't see what's in your head.</p>
-
-      <div class="grid2-wide fade-up" style="margin-top:3rem;">
-        <div>
-          <span class="prompt-label prompt-label-bad">😐&nbsp;&nbsp;// Vague — you'll be unhappy</span>
-          <div class="prompt-box prompt-bad">"make me a game"</div>
-          <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--text-dimmer);font-style:italic;">It will make <em>a</em> game. Probably not the one you want.</p>
-        </div>
-        <div>
-          <span class="prompt-label prompt-label-good">🤩&nbsp;&nbsp;// Specific — you'll be happy</span>
-          <div class="prompt-box prompt-good">"Make a clicker game. The button is a giant Pikachu. Every click adds 1 to a counter. After 50 clicks, the Pikachu turns into a Raichu. Yellow background."</div>
-          <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--green);font-style:italic;">It builds exactly what you imagined.</p>
-        </div>
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">💡</span>
-        <div><strong>Tip:</strong> if it builds the wrong thing, that means you didn't describe it enough. Don't get mad — <em>add more detail</em> and ask again. "Same thing, but bigger buttons and make the counter green."</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 13 — PLAN MODE vs AUTO
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="13">
-    <div class="ch-bg-num">13</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🧭</div>
-      <span class="eyebrow fade-up">// Two ways to work</span>
-      <h2 class="fade-up">Plan first<br><span class="accent">or just build?</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:780px;">Claude Code has two speeds. Knowing when to use each saves you from disasters AND makes the cool stuff happen faster.</p>
-
-      <div class="grid2 fade-up" style="margin-top:2.8rem;">
-        <div class="card card-accent">
-          <span class="card-icon">🗺️</span>
-          <div class="card-num">// Plan Mode</div>
-          <h3>Plan first, build second</h3>
-          <p>Claude makes a plan, shows it to you, and asks "ready?" before writing any code. You can change the plan. Best when the project is <strong style="color:var(--text);">big or you're not 100% sure what you want</strong>.</p>
-          <p style="margin-top:0.7rem;font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--accent);">⇧ Tab to turn it on</p>
-        </div>
-        <div class="card card-green">
-          <span class="card-icon">🏎️</span>
-          <div class="card-num" style="color:var(--green);">// Default Mode</div>
-          <h3>Just go</h3>
-          <p>Claude builds straight away. Faster. Best for <strong style="color:var(--text);">small changes</strong> — "make the button bigger," "change the color to blue," "add another sound effect."</p>
-          <p style="margin-top:0.7rem;font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--green);">The default. Nothing to enable.</p>
-        </div>
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">⛽</span>
-        <div><strong>Your $20/mo plan has a usage limit (tokens).</strong> Long sessions and giant rewrites burn it faster. If Claude says "you're approaching your limit," stop, save your work, and come back later. It resets.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 14 — APPROVALS YOU'LL SEE
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="14">
-    <div class="ch-bg-num">14</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">✋</div>
-      <span class="eyebrow fade-up">// Pop-ups</span>
-      <h2 class="fade-up">Claude will <span class="accent">ask permission</span><br>for everything</h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">When Claude wants to run a command on your computer, it pops up and asks. Here are the common ones. <strong style="color:var(--text);">Green = safe to allow. Red = stop and ask Dad.</strong></p>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;">
-
-        <div class="card card-green">
-          <div class="card-num" style="color:var(--green);margin-bottom:1rem;">✅ // Safe — allow</div>
-          <div style="display:flex;flex-direction:column;gap:0.7rem;font-family:'IBM Plex Mono',monospace;font-size:0.88rem;">
-            <div><span style="color:var(--green);">mkdir</span> &nbsp;<span style="color:var(--text-dim);">→ make a new folder</span></div>
-            <div><span style="color:var(--green);">cd</span> &nbsp;<span style="color:var(--text-dim);">→ go into a folder</span></div>
-            <div><span style="color:var(--green);">ls</span> &nbsp;<span style="color:var(--text-dim);">→ list what's in here</span></div>
-            <div><span style="color:var(--green);">cat</span> &nbsp;<span style="color:var(--text-dim);">→ show me what's in this file</span></div>
-            <div><span style="color:var(--green);">write file</span> &nbsp;<span style="color:var(--text-dim);">→ make or edit a file</span></div>
-            <div><span style="color:var(--green);">npm install</span> &nbsp;<span style="color:var(--text-dim);">→ download a tool</span></div>
-            <div><span style="color:var(--green);">python -m http.server</span> &nbsp;<span style="color:var(--text-dim);">→ open my site at localhost</span></div>
-          </div>
-        </div>
-
-        <div class="card card-bad">
-          <div class="card-num" style="color:var(--bad);margin-bottom:1rem;">🚨 // Stop &amp; ask Dad</div>
-          <div style="display:flex;flex-direction:column;gap:0.7rem;font-family:'IBM Plex Mono',monospace;font-size:0.88rem;">
-            <div><span style="color:var(--bad);">rm -rf</span> &nbsp;<span style="color:var(--text-dim);">→ DELETE a folder forever</span></div>
-            <div><span style="color:var(--bad);">git push</span> &nbsp;<span style="color:var(--text-dim);">→ put my code online</span></div>
-            <div><span style="color:var(--bad);">vercel deploy</span> &nbsp;<span style="color:var(--text-dim);">→ publish to the internet</span></div>
-            <div><span style="color:var(--bad);">curl http://...</span> &nbsp;<span style="color:var(--text-dim);">→ talk to a server out there</span></div>
-            <div><span style="color:var(--bad);">sudo</span> &nbsp;<span style="color:var(--text-dim);">→ "run this as the boss"</span></div>
-            <div><span style="color:var(--bad);">chmod / chown</span> &nbsp;<span style="color:var(--text-dim);">→ change who owns a file</span></div>
-            <div><span style="color:var(--bad);">anything mentioning API keys, passwords, or .env</span></div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">🤷</span>
-        <div><strong>Don't know what a command does?</strong> Just ask Claude: <em>"What does this command do? Explain like I'm 9."</em> &nbsp;That's a totally normal question and the answer will help you decide.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 15 — YOUR CLAUDE.md
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="15">
-    <div class="ch-bg-num">15</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">📝</div>
-      <span class="eyebrow fade-up">// Set up your rules</span>
-      <h2 class="fade-up">Tell Claude <span class="accent">about you</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:820px;">Put a file called <strong style="color:var(--text);font-family:'IBM Plex Mono',monospace;">CLAUDE.md</strong> in your Sites folder. Claude reads it every time. It's how you tell it "I'm a kid, walk me through stuff."</p>
-
-      <div class="card fade-up" style="margin-top:2.5rem;padding:0;overflow:hidden;max-width:920px;">
-        <div style="background:#0f0f0f;padding:0.7rem 1.2rem;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:0.5rem;">
-          <span style="width:10px;height:10px;background:#FF5F57;border-radius:50%;"></span>
-          <span style="width:10px;height:10px;background:#FEBC2E;border-radius:50%;"></span>
-          <span style="width:10px;height:10px;background:#28C840;border-radius:50%;"></span>
-          <span style="margin-left:0.8rem;">~/Sites/CLAUDE.md</span>
-        </div>
-        <div style="padding:1.4rem 1.6rem;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;line-height:1.7;color:var(--text);white-space:pre-wrap;">I'm a kid learning to code with my dad on Sundays. This is for fun
-and learning, not real work.
-
-<span style="color:var(--accent);"># How I work</span>
-- I'm not a developer. Explain things in simple words, not jargon.
-- Walk me through each step. Don't assume I know technical stuff.
-- Ask me lots of questions before building so we get what I actually want.
-- When you give me a link, give the full URL so I can copy it into Chrome.
-- For big projects, use plan mode first.
-
-<span style="color:var(--accent);"># Safety</span>
-- Never ask me for real personal info (name, address, phone, passwords,
-  school login, credit card). If I paste any by accident, stop and warn me.
-- If I need test data, use made-up stuff (Person A, fake@example.com).
-- Don't push to GitHub, deploy, or anything that puts my code online.
-  My dad will handle that part in a few weeks.
-
-<span style="color:var(--accent);"># Projects</span>
-- Put each new project in its own folder under ~/Sites/.
-- Folder names: only lowercase letters, numbers, and hyphens.
-- Every project gets a favicon and blocks search engines (robots.txt).
-- Always show me the local URL when the project is ready to open.</div>
-      </div>
-
-      <div class="callout fade-up">
-        <span class="callout-icon">🪄</span>
-        <div><strong>How to set it up:</strong> open Claude Code and say <em>"Save these rules to my Claude.md file in the Sites folder."</em> &nbsp;Then paste the text above. Done — it'll remember every session.</div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 16 — YOUR FIRST PROJECT
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="16">
-    <div class="ch-bg-num">16</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🌟</div>
-      <span class="eyebrow fade-up">// Today, one each</span>
-      <h2 class="fade-up">Your <span class="accent">first project</span></h2>
-      <div class="rule fade-up"></div>
-
-      <div class="grid2 fade-up" style="margin-top:2.5rem;">
-
-        <div class="track">
-          <div class="track-tag gael"><span class="ttx-icon">🖥️</span> Gael · iMac</div>
-          <span class="track-emoji">🧑‍🎤</span>
-          <h3>All About Me</h3>
-          <div class="machine">Sites/all-about-me/</div>
-          <p>A page with your name in giant letters, a grid of your favorite things with pictures, and a photo of you.</p>
-          <div class="why"><strong>Why this:</strong> you'll see yourself on the screen in 30 minutes. That's the whole point of week 1.</div>
-          <div class="card-num">// If you finish early</div>
-          <ul>
-            <li>Add a button that changes the background color when you click it</li>
-            <li>Add a counter to your favorite Pokémon card that goes up when you click</li>
-          </ul>
-        </div>
-
-        <div class="track">
-          <div class="track-tag ivan"><span class="ttx-icon">💻</span> Ivan · MacBook</div>
-          <span class="track-emoji">📚</span>
-          <h3>Homework Tracker</h3>
-          <div class="machine">Sites/homework-tracker/</div>
-          <p>A page where you add an assignment (subject, title, due date), group them by due date, check them off when done. Saves automatically so it's still there tomorrow.</p>
-          <div class="why"><strong>Why this:</strong> not a toy — a real tool you'll actually open Monday morning. That's the magic of Claude Code.</div>
-          <div class="card-num">// If you finish early</div>
-          <ul>
-            <li>Color-code by urgency — red today, yellow this week, gray later</li>
-            <li>Add a count at the top: "3 due this week, 1 overdue"</li>
-            <li>Filter: hide done assignments by default, toggle to show</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 17 — WHEN IT GETS STUCK
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="17">
-    <div class="ch-bg-num">17</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🐛</div>
-      <span class="eyebrow fade-up">// It will happen</span>
-      <h2 class="fade-up">When it <span class="accent">gets stuck</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">Claude makes mistakes. So does every other coder. The trick isn't avoiding mistakes — it's knowing what to do when they happen.</p>
-
-      <div class="grid2 fade-up" style="margin-top:3rem;">
-        <div class="card">
-          <span class="card-icon">📢</span>
-          <div class="card-num">// 01</div>
-          <h3>Read the error out loud</h3>
-          <p>Even if half of it looks like alien language, the part you understand is usually enough to know what went wrong.</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">🎯</span>
-          <div class="card-num">// 02</div>
-          <h3>Tell Claude what happened</h3>
-          <p>"That didn't work. The page is blank." or "The button doesn't do anything when I click it." Be specific.</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">👁️</span>
-          <div class="card-num">// 03</div>
-          <h3>Don't trust "it works"</h3>
-          <p>Claude will sometimes say it's done when it isn't. <strong style="color:var(--text);">Open the page yourself</strong> and click everything. Trust your eyes.</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">🆘</span>
-          <div class="card-num">// 04</div>
-          <h3>Still stuck? Ask Dad</h3>
-          <p>Some bugs need an adult. No shame — even pro coders ask for help every day. That's the job.</p>
         </div>
       </div>
     </div>
-  </div>
 
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 01</div>
+          <div class="chapter-title">Weekly decks</div>
+          <div class="chapter-subtitle">Each Sunday gets its own deck. The kids reference these during class; family can scroll through them anytime.</div>
+        </div>
+        <div class="ch-bg-num">01</div>
+      </div>
 
-  <!-- ════════════════════════════════════════════
-       SLIDE 18 — WHAT TO BUILD NEXT
-  ════════════════════════════════════════════ -->
-  <div class="slide" data-slide="18">
-    <div class="ch-bg-num">18</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">💡</div>
-      <span class="eyebrow fade-up">// Looking ahead</span>
-      <h2 class="fade-up">What should I <span class="accent">build next?</span></h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:760px;">When you're picking your next project, run through these questions. The answer usually shows up.</p>
-
-      <ul class="checks fade-up" style="margin-top:2rem;max-width:920px;">
-        <li><span class="q-icon">😤</span>What's something that bugs you every day?</li>
-        <li><span class="q-icon">🌐</span>What's a website you visit a lot — could you build a worse-but-yours version?</li>
-        <li><span class="q-icon">🎮</span>What's the simplest game you can think of? Could you make it?</li>
-        <li><span class="q-icon">🔘</span>What's something you wish you had a button for?</li>
-        <li><span class="q-icon">🧹</span>What's a chore you'd love to automate?</li>
-        <li><span class="q-icon">🪄</span>If a computer could build literally anything for you in 10 minutes, what would you pick?</li>
-        <li><span class="q-icon">👥</span><span class="marker">// Ivan</span>What's a tool your friends would actually use? Build that.</li>
+      <ul class="week-list">
+        <li><a href="/kids-training/wk1/">
+          <div class="week-num">Week 01</div>
+          <div class="week-body">
+            <div class="week-title">Hello, Claude Code</div>
+            <div class="week-date">May 17, 2026 · 20 slides</div>
+            <div class="week-desc">What Claude Code is, how to talk to it, three safety rules, Terminal mini-lesson, the CLAUDE.md kid template, and each kid's first local project.</div>
+          </div>
+          <div class="week-status live">Live</div>
+        </a></li>
+        <li><a href="/kids-training/wk2/">
+          <div class="week-num">Week 02</div>
+          <div class="week-body">
+            <div class="week-title">On the internet</div>
+            <div class="week-date">May 24, 2026 · 12 slides</div>
+            <div class="week-desc">GitHub + Vercel + custom domains. Take last week's local project and ship it to gaelsigala.com and ivanmikhailiv.com. The "I texted grandma my URL" moment.</div>
+          </div>
+          <div class="week-status live">Live</div>
+        </a></li>
+        <li><a style="cursor:default;opacity:0.55;" onclick="return false;">
+          <div class="week-num">Week 03</div>
+          <div class="week-body">
+            <div class="week-title">TBD</div>
+            <div class="week-date">Coming May 31</div>
+            <div class="week-desc">Picked after Week 2 wraps. Candidates: a second project per kid (deploy loop reinforcement), git basics + commit messages, or "change → push → live" demo.</div>
+          </div>
+          <div class="week-status upcoming">Soon</div>
+        </a></li>
       </ul>
+    </div>
 
-      <div class="callout fade-up">
-        <span class="callout-icon">🎯</span>
-        <div>The best projects come from <strong>real annoyances</strong> in your real life. Not the cool-sounding thing — the actual thing.</div>
+    <div class="chapter">
+      <div class="chapter-header">
+        <div class="chapter-header-inner">
+          <div class="chapter-number">Chapter 02</div>
+          <div class="chapter-title">For the teacher</div>
+          <div class="chapter-subtitle">Notes, prompts, and lesson plans for whoever's running the hour.</div>
+        </div>
+        <div class="ch-bg-num">02</div>
+      </div>
+
+      <div class="resources-row">
+        <a class="resource-card" href="/teachers/">
+          <div class="resource-label">// Internal</div>
+          <div class="resource-title">Teacher guide</div>
+          <div class="resource-desc">Lesson plans, per-kid prompts, what shipped last week, and what to watch out for. Behind a noindex tag &mdash; bookmark, don't share.</div>
+          <div class="resource-meta">hectorsigala.com/teachers/ &nbsp;&rarr;</div>
+        </a>
       </div>
     </div>
-  </div>
 
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 19 — LOCAL ONLY
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-surface" data-slide="19">
-    <div class="ch-bg-num">19</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">🏠</div>
-      <span class="eyebrow fade-up">// Today's rule</span>
-      <h2 class="fade-up">Local <span class="accent">only</span> this week</h2>
-      <div class="rule fade-up"></div>
-      <p class="lede fade-up" style="max-width:780px;">Today we build on your computer. Nothing online yet. Nothing public. The project lives on the iMac (Gael) or MacBook (Ivan) and stays there.</p>
-
-      <div class="grid2 fade-up" style="margin-top:3rem;">
-        <div class="card card-green">
-          <span class="card-icon">🏠</span>
-          <div class="card-num" style="color:var(--green);">// This week</div>
-          <h3>Build &amp; play locally</h3>
-          <p>Open the URL Claude gives you. Click around. Break stuff. Fix it. Show Dad. Show Mom. That's the entire job this week.</p>
-        </div>
-        <div class="card card-accent">
-          <span class="card-icon">🌐</span>
-          <div class="card-num">// Next Sunday</div>
-          <h3>GitHub &amp; the real internet</h3>
-          <p>Next week: we'll learn how to put your project on the real internet at a URL you can open on your phone. For today, focus on making something you love.</p>
-        </div>
-      </div>
+    <div class="footer">
+      <div><a href="/">&larr; hectorsigala.com</a></div>
+      <div>Made with my kids, for my kids</div>
     </div>
+
   </div>
-
-
-  <!-- ════════════════════════════════════════════
-       SLIDE 20 — CLOSING
-  ════════════════════════════════════════════ -->
-  <div class="slide slide-accent" data-slide="20">
-    <div class="ch-bg-num">20</div>
-    <div class="inner" style="position:relative;z-index:2;">
-      <div class="slide-icon fade-up">👋</div>
-      <span class="eyebrow fade-up" style="color:rgba(0,0,0,0.55);">// That's a wrap</span>
-      <h1 class="fade-up" style="color:#0a0a0a;">See you next<br><span style="color:rgba(0,0,0,0.45);">/</span>Sunday.</h1>
-      <div class="rule fade-up" style="background:rgba(0,0,0,0.5);"></div>
-      <p class="lede fade-up" style="max-width:560px;color:rgba(0,0,0,0.78);">Same time. Same boys. New project.</p>
-      <p class="fade-up" style="margin-top:2rem;color:rgba(0,0,0,0.5);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;">📅 Week 02 · GitHub + putting your project online</p>
-    </div>
-  </div>
-
-</div>
-
-<script>
-  const deck    = document.getElementById('deck');
-  const slides  = Array.from(document.querySelectorAll('.slide'));
-  const counter = document.getElementById('counter');
-  const navdots = document.getElementById('navdots');
-  const scrollBar = document.getElementById('scrollBar');
-  const total   = slides.length;
-  let current   = 0;
-
-  const slideNames = [
-    'Cover',
-    'What is it',
-    "You're the boss",
-    'Safety rules',
-    'One app',
-    'Meet Terminal',
-    'ls — list',
-    'mkdir — make',
-    'cd — go inside',
-    'Hand off to Claude',
-    'Your folders',
-    'How to ask',
-    'Plan vs Auto',
-    'Approvals',
-    'Your CLAUDE.md',
-    'First project',
-    'When stuck',
-    'What next',
-    'Local only',
-    'Closing'
-  ];
-
-  slides.forEach((_, i) => {
-    const item = document.createElement('button');
-    item.className = 'nav-item' + (i === 0 ? ' active' : '');
-
-    const label = document.createElement('span');
-    label.className = 'nav-label';
-    label.textContent = String(i + 1).padStart(2, '0') + ' · ' + (slideNames[i] || 'Slide ' + (i + 1));
-
-    const dot = document.createElement('span');
-    dot.className = 'dot';
-
-    item.appendChild(label);
-    item.appendChild(dot);
-    item.addEventListener('click', () => goTo(i));
-    navdots.appendChild(item);
-  });
-
-  const navItems = Array.from(document.querySelectorAll('.nav-item'));
-
-  function goTo(index) {
-    current = Math.max(0, Math.min(index, total - 1));
-    const id = slides[current].id;
-    if (id) history.replaceState(null, '', '#' + id);
-    slides[current].scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function updateUI() {
-    const scrollTop = deck.scrollTop;
-    const vh = deck.clientHeight;
-    let active = 0;
-    slides.forEach((s, i) => {
-      if (s.offsetTop <= scrollTop + vh * 0.5) active = i;
-    });
-    current = active;
-    navItems.forEach((item, i) => item.classList.toggle('active', i === active));
-    counter.textContent = String(active + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-    const max = deck.scrollHeight - deck.clientHeight;
-    scrollBar.style.width = (max > 0 ? (scrollTop / max) * 100 : 0) + '%';
-    const id = slides[active].id;
-    if (id) history.replaceState(null, '', '#' + id);
-  }
-
-  deck.addEventListener('scroll', updateUI, { passive: true });
-  updateUI();
-
-  if (location.hash) {
-    const target = document.querySelector(location.hash);
-    if (target) { const idx = slides.indexOf(target); if (idx >= 0) goTo(idx); }
-  }
-
-  document.addEventListener('keydown', e => {
-    if (['ArrowDown', 'ArrowRight', ' '].includes(e.key)) {
-      e.preventDefault();
-      goTo(current + 1);
-    } else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) {
-      e.preventDefault();
-      goTo(current - 1);
-    }
-  });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.15, root: deck });
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-</script>
 
 </body>
 </html>
