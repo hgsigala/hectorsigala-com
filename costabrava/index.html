@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<title>Valencia → Costa Brava · A Family Road Trip</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a89a1'/%3E%3Cpath d='M10 38q6-6 11 0t11 0 11 0 11 0' stroke='%23fff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='44' cy='20' r='7' fill='%23f6c453'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<style>
+:root{
+  --ink:#1d1d1f; --ink2:#55555b; --ink3:#86868b;
+  --hair:#e8e8ed; --paper:#ffffff; --wash:#f5f6f7;
+  --sea:#0a89a1; --sea-deep:#086b7e; --sand:#c2701d;
+  --serif:"New York","Iowan Old Style",Palatino,Georgia,ui-serif,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Segoe UI,sans-serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;
+  --maxw:720px; --wide:1100px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--sea-deep);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--sea);outline-offset:2px;border-radius:3px}
+
+/* ---------- shared type ---------- */
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--sea-deep)}
+.kicker.sand{color:var(--sand)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em}
+h2{font-size:clamp(30px,4.6vw,46px);line-height:1.12;margin:14px 0 18px}
+h3{font-size:23px;margin:0 0 10px}
+.lede{font-size:clamp(18px,2.2vw,21px);line-height:1.6;color:var(--ink2)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.wrapwide{max-width:var(--wide);margin:0 auto;padding:0 22px}
+section{padding:88px 0}
+section.tight{padding:56px 0}
+p+p{margin-top:1em}
+.prose p{margin-top:1em}
+.prose p:first-child{margin-top:0}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+/* ---------- nav ---------- */
+nav#topnav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(1.8) blur(18px);backdrop-filter:saturate(1.8) blur(18px);border-bottom:1px solid rgba(0,0,0,.06)}
+nav#topnav .in{max-width:var(--wide);margin:0 auto;display:flex;align-items:center;gap:20px;padding:0 22px;height:52px}
+nav#topnav .brand{font:600 14px var(--serif);letter-spacing:.02em;white-space:nowrap}
+nav#topnav .brand b{color:var(--sea-deep)}
+nav#topnav .links{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav#topnav .links::-webkit-scrollbar{display:none}
+nav#topnav .links a{font:500 13px var(--sans);color:var(--ink2);padding:7px 11px;border-radius:99px;white-space:nowrap}
+nav#topnav .links a:hover{background:rgba(0,0,0,.05);text-decoration:none;color:var(--ink)}
+
+/* ---------- route ribbon spine ---------- */
+#spine{position:fixed;left:26px;top:50%;transform:translateY(-50%);z-index:900;display:none}
+@media(min-width:1240px){#spine{display:block}}
+#spine .track{position:relative;width:2px;height:52vh;background:var(--hair);border-radius:2px}
+#spine .fill{position:absolute;top:0;left:0;width:2px;background:var(--sea);border-radius:2px;height:0%}
+#spine a{position:absolute;left:-4px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--hair);transform:translateY(-50%);transition:border-color .3s,background .3s}
+#spine a:hover{border-color:var(--sea)}
+#spine a.on{background:var(--sea);border-color:var(--sea)}
+#spine a .tip{position:absolute;left:20px;top:50%;transform:translateY(-50%);font:600 11px var(--mono);letter-spacing:.06em;color:var(--ink3);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+#spine a:hover .tip,#spine a.on .tip{opacity:1}
+
+/* ---------- hero ---------- */
+header#hero{position:relative;height:104svh;min-height:620px;display:flex;align-items:flex-end;color:#fff}
+#hero .bg{position:absolute;inset:0;overflow:hidden}
+#hero .bg img{width:100%;height:100%;object-fit:cover}
+#hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,20,25,.34) 0%,rgba(8,20,25,0) 34%,rgba(6,20,26,.66) 100%)}
+#hero .inner{position:relative;width:100%;max-width:var(--wide);margin:0 auto;padding:0 22px 9svh}
+#hero .kicker{color:#ffe9c4}
+#hero h1{font-size:clamp(44px,8.4vw,104px);line-height:1.02;margin:16px 0 18px;text-wrap:balance;text-shadow:0 2px 28px rgba(0,0,0,.35)}
+#hero .sub{font-size:clamp(17px,2.1vw,21px);max-width:640px;color:rgba(255,255,255,.92);text-shadow:0 1px 14px rgba(0,0,0,.4)}
+#hero .stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:30px;font:500 13px var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.9)}
+#hero .stats b{display:block;font:600 26px var(--serif);letter-spacing:0;color:#fff}
+#hero .credit{position:absolute;right:14px;bottom:10px;font:11px var(--sans);color:rgba(255,255,255,.55)}
+#hero .credit a{color:rgba(255,255,255,.7)}
+.mapslink{display:inline-block;margin-top:12px;font:600 12px var(--mono);letter-spacing:.06em;color:#fff;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.38);border-radius:99px;padding:6px 13px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.mapslink:hover{background:rgba(255,255,255,.3);text-decoration:none;color:#fff}
+.fadeup{animation:fadeup 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
+.fadeup.d2{animation-delay:.35s}.fadeup.d3{animation-delay:.55s}.fadeup.d4{animation-delay:.75s}
+@keyframes fadeup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media(max-width:600px){#hero .kicker{font-size:10px;letter-spacing:.12em}}
+@media (prefers-reduced-motion:reduce){.fadeup{animation:none}}
+
+/* ---------- profile chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chips span{font:500 13px var(--sans);color:var(--ink2);border:1px solid var(--hair);background:var(--wash);border-radius:99px;padding:7px 13px}
+
+/* ---------- map ---------- */
+#map{height:min(72vh,640px);min-height:420px;border-radius:18px;border:1px solid var(--hair);z-index:1}
+.mapfoot{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.stopchips{display:flex;flex-wrap:wrap;gap:6px}
+.stopchips button{font:600 12px var(--mono);letter-spacing:.04em;border:1px solid var(--hair);background:#fff;color:var(--ink2);border-radius:99px;padding:7px 12px;cursor:pointer;transition:all .2s}
+.stopchips button:hover{border-color:var(--sea);color:var(--sea-deep)}
+.stopchips button.on{background:var(--sea);border-color:var(--sea);color:#fff}
+#driveBtn{margin-left:auto;font:600 13px var(--sans);background:var(--ink);color:#fff;border:0;border-radius:99px;padding:10px 18px;cursor:pointer}
+#driveBtn:hover{background:#000}
+#hud{display:none;margin-top:14px;border:1px solid var(--hair);border-radius:14px;padding:14px 18px;background:var(--wash)}
+#hud.on{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline}
+#hud .seg{font:600 16px var(--serif)}
+#hud .m{font:500 12px var(--mono);letter-spacing:.06em;color:var(--ink2)}
+#hud .m b{color:var(--ink);font-size:14px}
+.numicon{background:var(--sea);color:#fff;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px var(--mono);box-shadow:0 1px 6px rgba(0,0,0,.35)}
+.leaflet-popup-content{font:14px/1.5 var(--sans)}
+.leaflet-popup-content b{font-family:var(--serif);font-size:16px}
+
+/* ---------- segments ---------- */
+.segs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:26px}
+.seg-card{border:1px solid var(--hair);border-radius:14px;padding:16px 16px 14px;background:#fff;transition:border-color .2s}
+.seg-card:hover{border-color:var(--sea)}
+.seg-card .r{font:600 11px var(--mono);letter-spacing:.1em;color:var(--sea-deep);text-transform:uppercase}
+.seg-card h4{font:600 16px var(--serif);margin:6px 0 10px}
+.seg-card .facts{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;font:500 12px var(--mono);color:var(--ink2)}
+.seg-card .facts b{display:block;font:600 15px var(--sans);color:var(--ink);letter-spacing:0}
+.scenic{color:var(--sand);letter-spacing:2px;font-size:13px}
+
+/* ---------- itinerary ---------- */
+.itintoggle{display:inline-flex;gap:4px;background:var(--wash);border:1px solid var(--hair);border-radius:99px;padding:4px;margin-top:26px}
+.itintoggle button{font:600 13px var(--sans);border:0;background:transparent;color:var(--ink2);border-radius:99px;padding:8px 18px;cursor:pointer}
+.itintoggle button.on{background:var(--ink);color:#fff}
+#itin-simple{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+@media(max-width:760px){#itin-simple{grid-template-columns:1fr}}
+.sday{border:1px solid var(--hair);border-radius:16px;padding:20px 22px;background:#fff}
+.sday .sdn{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sea-deep)}
+.sday h4{font:600 21px var(--serif);margin:4px 0 12px}
+.sday ol{list-style:none;display:grid;gap:9px}
+.sday li{display:grid;grid-template-columns:26px 1fr;gap:8px;font-size:15px;color:var(--ink);align-items:baseline}
+.sday li .em{text-align:center}
+.sday li small{color:var(--ink3)}
+.sday li b{font-weight:600}
+.day{display:grid;grid-template-columns:120px 1fr;gap:26px;padding:34px 0;border-top:1px solid var(--hair)}
+.day:first-of-type{border-top:0}
+.day .dh{position:sticky;top:70px;align-self:start}
+.day .dh .dn{font:600 13px var(--mono);letter-spacing:.14em;color:var(--sea-deep);text-transform:uppercase}
+.day .dh .dd{font:600 22px var(--serif);margin-top:4px;line-height:1.2}
+.day .dh .dm{font:12px var(--mono);color:var(--ink3);margin-top:6px}
+.tl{list-style:none}
+.tl li{position:relative;padding:0 0 22px 26px}
+.tl li::before{content:"";position:absolute;left:5px;top:9px;bottom:-2px;width:2px;background:var(--hair)}
+.tl li:last-child::before{display:none}
+.tl li::after{content:"";position:absolute;left:0;top:7px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--sea)}
+.tl .t{font:600 12px var(--mono);letter-spacing:.08em;color:var(--ink3)}
+.tl .w{font:600 16px var(--sans);margin:2px 0 3px}
+.tl .n{color:var(--ink2);font-size:15px}
+@media(max-width:700px){.day{grid-template-columns:1fr;gap:8px}.day .dh{position:static;display:flex;gap:14px;align-items:baseline}}
+
+/* ---------- chapters ---------- */
+.chapter{padding:0 0 90px}
+.ch-hero{position:relative;height:min(78vh,660px);min-height:400px;overflow:hidden}
+.ch-hero img{width:100%;height:100%;object-fit:cover}
+.ch-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(4,16,20,.62) 100%)}
+.ch-hero .ttl{position:absolute;left:0;right:0;bottom:0;color:#fff;z-index:2}
+.ch-hero .ttl .in{max-width:var(--wide);margin:0 auto;padding:0 22px 34px}
+.ch-hero .km{font:600 12px var(--mono);letter-spacing:.16em;color:#ffe9c4;text-transform:uppercase}
+.ch-hero h2{margin:8px 0 4px;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+.ch-hero .tag{font-size:16px;color:rgba(255,255,255,.9)}
+.ch-hero .credit{position:absolute;right:12px;bottom:8px;z-index:2;font:11px var(--sans);color:rgba(255,255,255,.5)}
+.ch-hero .credit a{color:rgba(255,255,255,.65)}
+.ch-body{max-width:var(--wide);margin:38px auto 0;padding:0 22px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:48px}
+@media(max-width:900px){.ch-body{grid-template-columns:1fr;gap:30px}}
+.bests{border:1px solid var(--hair);border-radius:16px;overflow:hidden;align-self:start}
+.minimap{height:200px;border-bottom:1px solid var(--hair);position:relative;z-index:1}
+.minimap .leaflet-container{height:100%;width:100%;background:#e9f0f2}
+.mmtip{font:700 12px var(--mono);letter-spacing:.03em;color:var(--ink);background:rgba(255,255,255,.92);border:1px solid var(--hair);border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.12);padding:3px 8px}
+.mmtip::before{display:none}
+.bests .bh{background:var(--ink);color:#fff;font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:11px 16px}
+.bests dl{display:grid;grid-template-columns:92px 1fr;font-size:14px}
+.bests dt{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:11px 0 11px 16px;border-top:1px solid var(--hair);align-content:center}
+.bests dd{padding:11px 16px 11px 10px;border-top:1px solid var(--hair);color:var(--ink)}
+.bests dl dt:first-of-type,.bests dl dt:first-of-type+dd{border-top:0}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:26px}
+.gal figure{position:relative;border-radius:12px;overflow:hidden;cursor:zoom-in;aspect-ratio:4/3;background:var(--wash)}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.gal figure:hover img{transform:scale(1.045)}
+@media(max-width:700px){.gal{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- beaches ---------- */
+.beaches{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:30px}
+.beach{border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.beach .ph{aspect-ratio:16/10;overflow:hidden;background:var(--wash)}
+.beach .ph img{width:100%;height:100%;object-fit:cover}
+.beach .bd{padding:16px 18px 18px}
+.beach h4{font:600 19px var(--serif);margin-bottom:2px}
+.beach .wc{font:500 13px var(--sans);color:var(--sea-deep);margin-bottom:12px}
+.meter{display:grid;grid-template-columns:86px 1fr;gap:6px 10px;font:500 12px var(--sans);color:var(--ink2);align-items:center}
+.meter .bar{height:5px;border-radius:99px;background:var(--hair);position:relative;overflow:hidden}
+.meter .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--sea);border-radius:99px}
+.beach .note{font-size:13px;color:var(--ink2);margin-top:12px;border-top:1px solid var(--hair);padding-top:10px}
+
+/* ---------- tables / grids ---------- */
+.scrollx{overflow-x:auto;margin-top:26px;border:1px solid var(--hair);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;background:#fff}
+th{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--hair);background:var(--wash);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--hair);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.win{color:var(--sea-deep);font-weight:600}
+.foodtbl td:first-child,.cmp td:first-child{font-weight:600;white-space:nowrap}
+
+/* ---------- hotels ---------- */
+.hotels{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:30px}
+.hotel{border:1px solid var(--hair);border-radius:16px;padding:22px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.hotel .tier{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sand)}
+.hotel h4{font:600 20px var(--serif)}
+.hotel .pr{font:600 15px var(--mono);color:var(--sea-deep)}
+.hotel p{font-size:14px;color:var(--ink2)}
+
+/* ---------- weather ---------- */
+.wx{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:30px}
+.wx .tile{border:1px solid var(--hair);border-radius:16px;padding:20px 18px;background:#fff}
+.wx .tile .v{font:600 34px var(--serif);letter-spacing:-.01em}
+.wx .tile .v small{font:600 17px var(--serif);color:var(--ink3)}
+.wx .tile .l{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-top:6px}
+
+/* ---------- radar / compare ---------- */
+#compare{background:#0e1c22;color:#e9eef0}
+#compare .kicker{color:#7fd6e4}
+#compare h2,#compare h3{color:#fff}
+#compare .lede{color:#aebcc2}
+#compare .scrollx{border-color:#24363e}
+#compare table{background:#12242c;color:#dbe4e8;min-width:560px}
+#compare th{background:#0e1c22;color:#7d919a;border-color:#24363e}
+#compare td{border-color:#24363e}
+#compare td.win{color:#7fd6e4}
+.radarbox{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,1fr);gap:40px;align-items:center;margin-top:34px}
+@media(max-width:860px){.radarbox{grid-template-columns:1fr}}
+.legend{display:flex;gap:22px;margin:8px 0 16px;font:600 13px var(--sans)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+#radar svg{width:100%;height:auto;display:block}
+.verdictlist{list-style:none;display:grid;gap:12px}
+.verdictlist li{display:grid;grid-template-columns:26px 1fr;gap:12px;font-size:15px;color:#c8d4d9}
+.verdictlist li b{color:#fff}
+.verdictlist .ic{color:#7fd6e4;font-weight:700}
+
+/* ---------- final rec ---------- */
+#verdict .panel{border:2px solid var(--sea);border-radius:22px;padding:clamp(26px,5vw,52px);margin-top:34px;background:linear-gradient(180deg,#f2fafb,#fff)}
+#verdict .stamp{display:inline-block;font:700 12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#fff;background:var(--sea);border-radius:99px;padding:8px 16px}
+#verdict .panel h3{font-size:clamp(26px,3.6vw,36px);margin:18px 0 12px;line-height:1.15}
+.whyrows{display:grid;gap:0;margin-top:26px;border-top:1px solid var(--hair)}
+.whyrows .row{display:grid;grid-template-columns:200px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid var(--hair);font-size:15px}
+.whyrows .row b{font-family:var(--serif);font-size:16px}
+.whyrows .row span{color:var(--ink2)}
+@media(max-width:640px){.whyrows .row{grid-template-columns:1fr;gap:4px}}
+
+/* ---------- lightbox ---------- */
+/* ---------- mobile app-style bottom bar ---------- */
+#appbar{display:none}
+@media(max-width:760px){
+  #appbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:1200;
+    background:rgba(255,255,255,.82);-webkit-backdrop-filter:saturate(1.8) blur(20px);backdrop-filter:saturate(1.8) blur(20px);
+    border-top:1px solid rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom)}
+  #appbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;padding:8px 0 6px;
+    font:600 10px var(--mono);letter-spacing:.05em;color:var(--ink3);text-decoration:none;text-transform:uppercase}
+  #appbar a .i{font-size:21px;line-height:1;filter:grayscale(1);opacity:.6;transition:all .2s}
+  #appbar a.on{color:var(--sea-deep)}
+  #appbar a.on .i{filter:none;opacity:1;transform:scale(1.12)}
+  body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+  nav#topnav .links{display:none}
+}
+
+#lb{position:fixed;inset:0;z-index:2000;background:rgba(8,12,14,.94);display:none;align-items:center;justify-content:center;flex-direction:column;padding:30px}
+#lb.on{display:flex}
+#lb img{max-width:min(1200px,94vw);max-height:82vh;object-fit:contain;border-radius:8px}
+#lb .cap{color:rgba(255,255,255,.85);font-size:14px;margin-top:14px;text-align:center;max-width:90vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#lb .cap a{color:rgba(255,255,255,.6)}
+#lb button{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:99px;width:42px;height:42px;font-size:20px;cursor:pointer}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--hair);padding:44px 0 70px;font-size:13px;color:var(--ink3)}
+footer .wrapwide{display:grid;gap:10px}
+</style>
+</head>
+<body>
+
+<nav id="topnav" aria-label="Sections">
+  <div class="in">
+    <span class="brand">Valencia <b>→</b> Costa Brava</span>
+    <div class="links">
+      <a href="#route">Route</a><a href="#itinerary">Itinerary</a><a href="#stops">Towns</a><a href="#beaches">Beaches</a><a href="#hotels">Stay</a><a href="#weather">Weather</a><a href="#food">Food</a><a href="#compare">vs. Mallorca</a><a href="#verdict">Verdict</a>
+    </div>
+  </div>
+</nav>
+
+<div id="spine" aria-hidden="true"><div class="track"><div class="fill" id="spinefill"></div></div></div>
+
+<header id="hero">
+  <div class="bg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Platja_d%27Aiguablava.jpg/1920px-Platja_d%27Aiguablava.jpg" alt="The turquoise cove of Aiguablava, Begur" fetchpriority="high"></div>
+  <div class="inner">
+    <div class="kicker fadeup">A proposal for the family · Fri Jul 17 – Mon Jul 20, 2026</div>
+    <h1 class="fadeup d2">Skip the ferry.<br>Drive the coast.</h1>
+    <p class="sub fadeup d3">Four days from Valencia to Barcelona by way of the Costa Brava — pine-cliff coves, whitewashed fishing villages, one surrealist headland, and not a single airport security line.</p>
+    <div class="stats fadeup d4">
+      <div><b>497 mi</b>799 KM · TOTAL DRIVE</div>
+      <div><b>8</b>STOPS</div>
+      <div><b>3</b>NIGHTS · BEGUR</div>
+      <div><b>0</b>FLIGHTS</div>
+    </div>
+  </div>
+  <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Platja_d'Aiguablava.jpg">Wikimedia Commons</a></div>
+</header>
+
+<section id="question">
+  <div class="wrap prose rv">
+    <div class="kicker">The question</div>
+    <h2>Mallorca, or the coast you can drive to?</h2>
+    <p class="lede">After a week in Valencia the obvious move is the island: fly to Palma, rent cars, find a beach. This page argues for the other option — pointing the car north and spending the same four days on the Costa Brava, the stretch of Catalonia the word <em>brava</em> ("wild") was coined for, before dropping into Barcelona on Monday afternoon.</p>
+    <p>Both places have Mediterranean water worth crossing the world for. The difference is everything around the water: with seven people, Mallorca means boarding passes, checked bags, a rental-car counter, and the most-visited island in Spain in its busiest month. The Costa Brava means loading the car you already have and stopping wherever looks good.</p>
+    <div class="chips" aria-label="Family profile">
+      <span>Family of seven (with Lexi)</span><span>Kids: 3, 6, 9 &amp; 16</span><span>Kids who like road trips</span><span>A week in Valencia done</span><span>Guadalest ✓</span><span>Xàbia ✓</span><span>Serious about coffee</span><span>Casa Montaña fans</span><span>Allergic to tourist traps</span>
+    </div>
+  </div>
+</section>
+
+<section id="route" class="tight" style="background:var(--wash)">
+  <div class="wrapwide">
+    <div class="rv">
+      <div class="kicker">The route</div>
+      <h2>Eight stops, one coastline</h2>
+      <p class="lede" style="max-width:640px">Tap any marker to jump to its chapter. Distances and driving times come from actual road routing, not guesses. Press <strong>Drive it</strong> to watch the whole trip run.</p>
+    </div>
+    <div style="margin-top:28px" class="rv">
+      <div id="map" role="application" aria-label="Interactive route map"></div>
+      <div class="mapfoot">
+        <div class="stopchips" id="stopchips"></div>
+        <button id="driveBtn">▶ Drive it</button>
+      </div>
+      <div id="hud" aria-live="polite"></div>
+    </div>
+    <div class="segs rv" id="segcards"></div>
+    <p style="margin-top:14px;font:12px var(--mono);color:var(--ink3)">Distances &amp; times: OpenStreetMap road routing. Times are without stops. Elevation and scenic ratings are editorial estimates.</p>
+  </div>
+</section>
+
+<section id="itinerary">
+  <div class="wrap">
+    <div class="rv">
+      <div class="kicker">The plan</div>
+      <h2>Four days, at family speed</h2>
+      <p class="lede">One base for all three nights — the Begur peninsula — so nobody repacks a bag until Monday.</p>
+      <div style="margin-top:22px;border:1px solid var(--hair);border-left:3px solid var(--sea);border-radius:12px;padding:16px 20px;background:var(--wash)">
+        <p style="font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sea-deep);margin-bottom:8px">How to read these times</p>
+        <p style="font-size:15px;color:var(--ink2)">Every time below is already a <strong>with-kids time</strong> — shoes lost, snack negotiated, one more swim granted. Nothing on this trip is a tour or a ticket window, so treat the times as a rhythm, not a schedule. There are exactly <strong>three real clocks all weekend</strong>: the Sa Tuna parking lot before 10 on Saturday, whatever dinner tables you booked, and Monday's ~2 pm pull-out for the 4 pm Barcelona arrival. Everything else can slide an hour — the coves aren't going anywhere, and the whole point of driving instead of flying is that nobody's holding a boarding pass.</p>
+      </div>
+      <div style="margin-top:14px;border:1px solid var(--hair);border-left:3px solid var(--sand);border-radius:12px;padding:16px 20px;background:#fdf9f3">
+        <p style="font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:8px">The Lexi dividend — three built-in date windows</p>
+        <p style="font-size:15px;color:var(--ink2)">With Lexi along, three moments upgrade beautifully to just the two of you — no extra planning, they're already in the schedule:</p>
+        <ul style="margin:10px 0 0 18px;font-size:15px;color:var(--ink2);display:grid;gap:8px">
+          <li><strong>Friday, golden hour</strong> — the Castell de Begur walk à deux while Lexi runs villa pool hour. First view of the coast, just you two, wine after. Rejoin everyone for dinner — or go full date night at Rostei's courtyard and leave the crew a villa pasta night.</li>
+          <li><strong>Saturday, ~7:30 pm</strong> — the Parador sunset terrace as a two-top while Lexi and the kids finish the Aiguablava afternoon on the sand below you. You can literally wave down at them.</li>
+          <li><strong>Sunday lunch — the big one</strong> — book <a href="https://www.google.com/maps/search/?api=1&query=Compartir%20Cadaqu%C3%A9s" target="_blank" rel="noopener">Compartir</a> for <em>two</em> instead of seven. It's a sharing-menu restaurant from the Disfrutar chefs — dramatically better as a date than as crowd control — while Lexi takes the kids for gelato on the passeig and a dip at Es Llané. Rejoin for the Cap de Creus drive after.</li>
+        </ul>
+        <p style="font-size:14px;color:var(--ink3);margin-top:10px">If you take option three, the booking plan changes: Compartir table for 2, and a casual kid-friendly Riba terrace becomes the family lunch answer.</p>
+      </div>
+    </div>
+
+
+    <div class="itintoggle rv" role="tablist" aria-label="Itinerary detail level">
+      <button class="on" data-itin="simple">At a glance</button>
+      <button data-itin="full">Hour by hour</button>
+    </div>
+
+    <div id="itin-simple" class="rv">
+      <div class="sday">
+        <div class="sdn">Friday</div><h4>The drive up</h4>
+        <ol>
+          <li><span class="em">🚗</span><span>Coffee, load the car, go <small>(~9:30, no stress)</small></span></li>
+          <li><span class="em">🏰</span><span>Lunch under a sea castle — Peñíscola <small>(paella; chicken + fries for kids)</small></span></li>
+          <li><span class="em">😴</span><span>Big drive, kids nap, one snack stop</span></li>
+          <li><span class="em">🏡</span><span>Villa check-in + pool hour <small>(~5 pm)</small></span></li>
+          <li><span class="em">🌅</span><span>Castle walk at golden hour <small>(or date window #1 — Lexi's got the pool)</small></span></li>
+          <li><span class="em">🍽️</span><span><b>Dinner in Begur old town</b> <small>(booked)</small></span></li>
+        </ol>
+      </div>
+      <div class="sday">
+        <div class="sdn">Saturday</div><h4>Beach day</h4>
+        <ol>
+          <li><span class="em">🍳</span><span>Eggs at the villa <small>(yum, and strategic)</small></span></li>
+          <li><span class="em">⏰</span><span><b>Claim your cove by 9:45</b> — the trip's only alarm <small>(Aiguablava sand or Sa Tuna pebbles — pick one)</small></span></li>
+          <li><span class="em">🏖️</span><span>One beach, ALL day — that's the whole plan</span></li>
+          <li><span class="em">🦑</span><span>Long lunch on the sand <small>(Toc al Mar or Hostal Sa Tuna, right there)</small></span></li>
+          <li><span class="em">🍸</span><span>Parador sunset drink — date window #2</span></li>
+          <li><span class="em">🍽️</span><span><b>Dinner in Begur old town</b> <small>(booked)</small></span></li>
+        </ol>
+      </div>
+      <div class="sday">
+        <div class="sdn">Sunday</div><h4>Dalí day</h4>
+        <ol>
+          <li><span class="em">☕</span><span>Quick villa breakfast, roll out <small>(~9ish)</small></span></li>
+          <li><span class="em">⛰️</span><span>The famous mountain road <small>(~1 h 40 — cameras out)</small></span></li>
+          <li><span class="em">🤍</span><span>Cadaqués: waterfront coffee, wander, get lost on purpose</span></li>
+          <li><span class="em">🏖️</span><span><b>Beach day #2: swim at Portlligat</b> — the calm cove at Dalí's front door <small>(suits under clothes)</small></span></li>
+          <li><span class="em">🍴</span><span><b>Lunch</b> — Casa Anita with everyone, or Compartir just you two <small>(Lexi + kids: gelato &amp; a swim)</small></span></li>
+          <li><span class="em">🌊</span><span>Cap de Creus cliffs + lighthouse <small>(end-of-the-world rocks)</small></span></li>
+          <li><span class="em">🍽️</span><span>Early dinner on the seafront, then home <small>(no bedtime target)</small></span></li>
+        </ol>
+      </div>
+      <div class="sday">
+        <div class="sdn">Monday</div><h4>Rolling into Barcelona</h4>
+        <ol>
+          <li><span class="em">🥞</span><span>Fitzroy pancakes + flat whites <small>(pack the car first)</small></span></li>
+          <li><span class="em">🏰</span><span>Pals medieval wander <small>(90 easy minutes)</small></span></li>
+          <li><span class="em">🍚</span><span>Rice lunch at Vicus <small>(booked)</small></span></li>
+          <li><span class="em">⏰</span><span><b>Wheels rolling ~2:10</b> — the day's one clock</span></li>
+          <li><span class="em">🏙️</span><span>Barcelona 4:00 — unload everyone, flop for an hour or two</span></li>
+          <li><span class="em">🍦</span><span>One adult drops the car, comes home with gelato. Trip complete.</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="day rv">
+      <div class="dh"><div><div class="dn">Friday</div><div class="dd">The long leg</div><div class="dm">JUL 17 · 294 MI / 473 KM</div><div class="dm" style="color:var(--sand)">☀ 81–90°F · 0% RAIN</div></div></div>
+      <ul class="tl">
+        <li><span class="t">~9:30</span><div class="w">Check out when the car's loaded</div><div class="n">Aim for 9:30, but this leg has no clock — leaving by 10:30 still lands the whole plan. Fuel up leaving the city; the AP-7 is toll-free now, so the drive costs fuel and nothing else. <em>Shopping note:</em> grab <strong>water shoes for everyone</strong> ("escarpines," €7–15) at any Decathlon in Valencia before you leave — Sa Tuna's pebbles will thank you. Forget? There's a Decathlon in Platja d'Aro 25 min from Begur, and the Begur/Calella beach shops sell them all July.</div></li>
+        <li><span class="t">~11:00</span><div class="w">Peñíscola — walk first, then lunch</div><div class="n">90 minutes up the coast, 10 minutes off the motorway: a walled old town on a rock in the sea, the castle where a pope holed up in the 1400s. Wander the ramparts before lunch while it's 84°F instead of 93°F, then take the long terrace lunch under the walls — paella or arroz a banda for the adults; every kitchen on this strip will do grilled chicken and fries or a plain tortilla francesa (French omelette — Spain's scrambled eggs) for the kids without blinking. No hurry leaving: the afternoon's only job is a motorway. <em>Parking:</em> paid lots at the foot of the old town, then a 10-minute climb. <em>Stroller: no</em> — ramps and stairs; hip-carry the littlest.</div></li>
+        <li><span class="t">~14:00</span><div class="w">Back on the AP-7, whenever lunch winds down</div><div class="n">Three hours of easy motorway past the Ebro Delta rice country and Tarragona. One service-area stop, driver swap, kids nap.</div></li>
+        <li><span class="t">~17:00</span><div class="w">Arrive Begur — Airbnb check-in</div><div class="n">Keys, bags in, swimsuits found. If the villa has a pool, the rest of the afternoon is what it's for — there is nothing else on today's list until dinner.</div></li>
+        <li><span class="t">golden hour</span><div class="w">Walk up to Castell de Begur</div><div class="n">15 minutes on foot from the old town to the ruined castle on the hilltop — 360° over the whole coast you'll spend the weekend on. Sunset is 9:19 pm, so anytime after 7:30 is golden; it's a stroll, not an excursion. <em>Stroller: no</em> — it's a rough path at the top — Illa gets carried the final stretch.</div></li>
+        <li><span class="t">21:00</span><div class="w">Dinner in the old town</div><div class="n">Fonda Caner for Empordà classics, or Restaurant Rostei's courtyard if you want the special-occasion opener. Book either — and at booking, say you have kids: tortilla francesa, grilled chicken or plain pasta is a normal ask at both, so the food lands for everyone at once and nobody's negotiating mid-meal.</div></li>
+      </ul>
+    </div>
+
+    <div class="day rv">
+      <div class="dh"><div><div class="dn">Saturday</div><div class="dd">One cove, all day</div><div class="dm">JUL 18 · 9 MI / 15 KM</div><div class="dm" style="color:var(--sand)">☀ 81–84°F · SEA 79°F · 0% RAIN</div></div></div>
+      <ul class="tl">
+        <li><span class="t">8:30</span><div class="w">Breakfast at the villa</div><div class="n">Eggs and toast at home this morning — beating the cove parking is the weekend's one genuine alarm clock (Fitzroy's pancakes are penciled in for Monday). Coffee kit or moka pot comes standard in most villas; buy beans Friday.</div></li>
+        <li><span class="t">9:30</span><div class="w">Claim your cove <span style="color:var(--sand)">⏰ the one real deadline</span></div><div class="n">One beach, all day — no repacking the car at 3 pm. Pick tonight-before which one: <strong>Aiguablava</strong> (golden sand, shallow turquoise shelf, kayaks, Toc al Mar right on the beach — the full-service family day; lot fills by 10:30) or <strong>Sa Tuna</strong> (glass-clear pebble cove, the trip's best snorkeling, half the people; lot full by 10). Either way: parked by 9:45, then the day owns no clock at all. <em>Stroller: leave it at both.</em></div></li>
+        <li><span class="t">~13:30</span><div class="w">Lunch on the sand, as long as you like</div><div class="n">At Aiguablava it's Toc al Mar, wild fish over oak coals ten steps from your towels. At Sa Tuna it's Hostal Sa Tuna's beach terrace and the house fish stew. Both do the kids' standards without blinking. A two-hour lunch is not a delay here; it's the local speed.</div></li>
+        <li><span class="t">~16:00</span><div class="w">More of the same, on purpose</div><div class="n">Siesta under the pines, another swim, the snorkel points, a kayak hour (Aiguablava). Adults take turns on the camí de ronda around the headland. The itinerary is deliberately empty until sunset — this is the day the trip is <em>for</em>.</div></li>
+        <li><span class="t">~19:30</span><div class="w">Sunset drink at the Parador terrace</div><div class="n">The modernist parador sits on the cliff above Aiguablava — one round of drinks buys the best view on the peninsula (10 minutes from either cove). No reservation, no schedule; go sandy. Date window #2 if Lexi takes the crew home.</div></li>
+        <li><span class="t">21:00</span><div class="w">Dinner in Begur old town</div><div class="n">Fonda Caner or Rostei — whichever one Friday didn't get (booked). Kids' standards on request at both, and the ten-minute drive home is the whole commute.</div></li>
+      </ul>
+    </div>
+
+    <div class="day rv">
+      <div class="dh"><div><div class="dn">Sunday</div><div class="dd">Dalí country (beach included)</div><div class="dm">JUL 19 · 118 MI / 190 KM</div><div class="dm" style="color:var(--sand)">☀ 82–88°F · SWIM AT PORTLLIGAT · 1% RAIN</div></div></div>
+      <ul class="tl">
+        <li><span class="t">~9:15</span><div class="w">Drive to Cadaqués</div><div class="n">100 minutes, and leaving at 9 or 9:45 changes nothing — the parking note below is the only reason morning beats noon. The last stretch is the point: from Roses the road climbs over the bare Cap de Creus massif in a run of hairpins — olive terraces, slate, sea on both horizons. Whoever isn't driving gets the camera.</div></li>
+        <li><span class="t">~11:00</span><div class="w">Coffee on the Riba</div><div class="n">Cadaqués is the whitewashed town every painter fell for — Dalí grew up summering here; Picasso, Miró and Duchamp all passed through. Coffee at a waterfront terrace — a long one; this town punishes hurry and rewards sitting — then get lost in the blue-shuttered lanes up to the church of Santa Maria. Getting lost is the activity; there's nothing to be late for until dinner. <em>Parking:</em> the big paid lot at the town entrance, then a 10-minute mostly-flat walk to the waterfront. <em>Stroller:</em> park it for the old-town lanes (steep polished cobbles), but see the next stop.</div></li>
+        <li><span class="t">when ready</span><div class="w">Beach day #2 — Portlligat, at Dalí's front door</div><div class="n">Swimsuits under clothes this morning. Walk 20 minutes over the hill to Portlligat, the fishing hamlet where Dalí lived for 50 years — the white house with the giant eggs on the roof sits right on a calm, boat-dotted cove that's made for an unhurried swim. That's today's beach: one cove, no schedule, with a surrealist's house as the backdrop. (Backup if legs are short: Es Llané, the little beach directly below the Riba in town.) Only book the timed house-interior visit if you're sure the crew is up for it — it's the one thing in Cadaqués that would put you on a clock. <em>Stroller: yes for this one</em> — paved lane the whole way.</div></li>
+        <li><span class="t">~14:00</span><div class="w">Lunch in town</div><div class="n">Casa Anita — no menu, the owner decides, tables shared, an institution since forever; tell them what the kids eat and it appears (a tortilla francesa and fried potatoes is home cooking here, literally). Or Compartir, the Michelin-listed sharing restaurant from the Disfrutar chefs, if you booked well ahead — sharing format means kids pick what they recognize.</div></li>
+        <li><span class="t">~16:30</span><div class="w">Drive out to Cap de Creus</div><div class="n">Twenty minutes on a wild single-lane road through a rock moonscape — mainland Spain's easternmost point. Park below the lighthouse, scramble the smooth wind-carved rocks, find the cliffs. Anytime from 4 to 7 works — the later, the more copper the light. <em>Parking:</em> lot below the lighthouse, 5 minutes up the road on foot. <em>Stroller: no</em> — it's all rock; hand-holding terrain for the youngest.</div></li>
+        <li><span class="t">~19:00</span><div class="w">Early dinner back in Cadaqués</div><div class="n">Seafront table at Es Baluard or a casual one on the Riba — eating at 7 is touristy by Spanish rules and exactly right with four kids and a drive home. Seafront terraces here all carry the kid safety net: grilled chicken, tortilla francesa, fried potatoes, plain pasta.</div></li>
+        <li><span class="t">after dinner</span><div class="w">Home to Begur</div><div class="n">100 minutes back; the hairpins are gentler downhill. No target bedtime — tomorrow's only fixture is breakfast.</div></li>
+      </ul>
+    </div>
+
+    <div class="day rv">
+      <div class="dh"><div><div class="dn">Monday</div><div class="dd">Medieval &amp; metro</div><div class="dm">JUL 20 · 92 MI / 148 KM</div><div class="dm" style="color:var(--sand)">☀ 81–86°F · 2–6% RAIN</div></div></div>
+      <ul class="tl">
+        <li><span class="t">from 9:00</span><div class="w">Breakfast — Fitzroy Café, Begur</div><div class="n">The trip's proper brunch: pancakes, eggs, smashed-avo toast, real flat whites, on a terrace in the old town — opens at 9:00, and it's exactly your family's breakfast genre. Kids get pancakes and toast; nobody has to translate. Pack and check out of the villa first so you roll straight from the table — and take your time; Pals doesn't care when you show up.</div></li>
+        <li><span class="t">~10:30</span><div class="w">Pals — the medieval hill town</div><div class="n">18 minutes inland. A perfectly kept knot of golden-stone lanes around the Torre de les Hores. Walk Carrer Major up to the Mirador Josep Pla for the view over rice paddies to the sea. An hour and a half at wander speed is exactly enough — which is the charm; there's no list to complete here. <em>Parking:</em> lots ring the old quarter, 2 minutes to the gate. <em>Stroller: doable but bumpy</em> — the lanes are smooth stone but sloped with occasional steps — bring it and expect to lift it over a few of them.</div></li>
+        <li><span class="t">~12:45</span><div class="w">Lunch before the motorway</div><div class="n">Vicus in Pals (Michelin-listed, seasonal Catalan — book, and mention the kids: a plain rice or grilled chicken plate is a normal request) or grab an easy menú del día and save appetite for Barcelona.</div></li>
+        <li><span class="t">14:10</span><div class="w">Drive to Barcelona <span style="color:var(--sand)">⏰ the day's one clock</span></div><div class="n">1 h 45 on the C-32 with the coast out the left windows. Wheels rolling by ~2:10 is what protects the relaxed 4 pm arrival — everything before it was built loose so this one moment isn't stressful.</div></li>
+        <li><span class="t">16:00</span><div class="w">Arrive Barcelona — 4 pm, as ordered</div><div class="n">Straight to the Airbnb first: unload all seven people and every bag while the car sits in a nearby garage spot or loading zone. Do NOT do the rental office with the whole family aboard.</div></li>
+        <li><span class="t">16:15</span><div class="w">Decompress</div><div class="n">An hour or two at the apartment — showers, snacks, kids horizontal. The city isn't going anywhere.</div></li>
+        <li><span class="t">18:00</span><div class="w">One adult drops the car</div><div class="n">Return it at a central office — the rental desks at Sants station keep evening hours and the metro or a 10-minute taxi brings you home. Avoid the airport return: it's 25 minutes out and solves a problem you don't have. Reward on the walk back: DelaCrem or Rocambolesc gelato for the household. You've earned the vermut.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTERS ============ -->
+<section id="stops" style="padding-bottom:0">
+  <div class="wrap rv" style="padding-bottom:56px">
+    <div class="kicker">The stops</div>
+    <h2>Every town, properly introduced</h2>
+    <p class="lede">Cumulative kilometers count from the Valencia driveway. Tap any photo to see it full-screen.</p>
+  </div>
+</section>
+
+<!-- VALENCIA -->
+<article class="chapter" id="stop-valencia">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/El_Palau_de_les_Arts_Reina_Sof%C3%ADa%2C_Valencia_-_Jan_2007.jpg/1920px-El_Palau_de_les_Arts_Reina_Sof%C3%ADa%2C_Valencia_-_Jan_2007.jpg" alt="Palau de les Arts, City of Arts and Sciences, Valencia at night" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MILE 0 · DEPARTURE · FRIDAY 9:30</div><h2>Valencia</h2><div class="tag">The week that was — one last look in the mirror</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Valencia Spain" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:El_Palau_de_les_Arts_Reina_Sofía,_Valencia_-_Jan_2007.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p>You know this city now — the Turia gardens, the Central Market, the paella that ruined all other paella, Casa Montaña's bodega barrels and Simple Bodega's small plates. The road trip starts the way all good ones do: full tank, coffee in hand, out by half past nine.</p>
+      <p>The route north passes the City of Arts and Sciences on the way out of town — a fitting last frame of Calatrava white before four days of fishermen's white.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="valencia" aria-hidden="true"></div><div class="bh">Before you go</div>
+      <dl>
+        <dt>Coffee</dt><dd>One final specialty flat white in Ruzafa — you have your spots by now</dd>
+        <dt>Fuel</dt><dd>Fill up in the city; motorway stations charge more</dd>
+        <dt>Supplies</dt><dd>Beach snacks + water from Mercadona; July coves have no shops</dd>
+        <dt>Water shoes</dt><dd>"Escarpines" at any Valencia Decathlon, €7–15 a pair — one per person for the pebble coves. Backup: Decathlon Platja d'Aro (25 min from Begur) or the Begur/Calella beach shops</dd>
+        <dt>Time</dt><dd>Rolling ~9:30 — early checkout buys a full Begur evening, but it's not a deadline</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Ciutat_de_les_Arts_i_les_Ci%C3%A8ncies_01.jpg/1920px-Ciutat_de_les_Arts_i_les_Ci%C3%A8ncies_01.jpg" data-page="https://commons.wikimedia.org/wiki/File:Ciutat_de_les_Arts_i_les_Ciències_01.jpg" alt="City of Arts and Sciences, Valencia" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/La_Malvarrosa_-_Juanedc.jpg/1920px-La_Malvarrosa_-_Juanedc.jpg" data-page="https://commons.wikimedia.org/wiki/File:La_Malvarrosa_-_Juanedc.jpg" alt="Malvarrosa beach, Valencia" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Valencia_-_Mercado_Central_1.jpg/1920px-Valencia_-_Mercado_Central_1.jpg" data-page="https://commons.wikimedia.org/wiki/File:Valencia_-_Mercado_Central_1.jpg" alt="Mercado Central, Valencia" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- BEGUR -->
+<article class="chapter" id="stop-begur">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Begur-Castillo.jpg/1920px-Begur-Castillo.jpg" alt="Begur town beneath its ruined castle" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 294 / KM 473 · BASE CAMP · 3 NIGHTS</div><h2>Begur</h2><div class="tag">A hill town with a castle on top and eight coves at its feet</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Begur Girona Spain" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Begur-Castillo.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> Begur is the town Catalans keep for themselves while tourists pile into Lloret. It sits a kilometer back from the sea on a hill, so it kept its life: a real plaça with card games and vermut, "Indiano" mansions built by returners from Cuba, and lanes that smell of jasmine at night. Every road out of town falls to a different cove.</p>
+      <p><strong>The evening ritual.</strong> Walk up to the castle ruin (15 min) for the 360° view — Pyrenees to one side, the whole Costa Brava to the other — then descend into the old town for dinner. That loop, repeated three nights, is the spine of the weekend.</p>
+      <p><strong>Time needed.</strong> It's home base — you'll absorb it in evening doses, which is exactly how it's best taken.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="begur" aria-hidden="true"></div><div class="bh">Begur · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Castell de Begur" target="_blank" rel="noopener">Castell de Begur</a> at golden hour — free, 15 min up</dd>
+        <dt>Beach</dt><dd>Its coves ARE the beaches: Sa Tuna, Aiguablava, Sa Riera, Illa Roja</dd>
+        <dt>Coffee</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Fitzroy Begur" target="_blank" rel="noopener">Fitzroy Café</a> — flat whites, pancakes, eggs; the trip's brunch anchor (from 9:00)</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Toc al Mar Begur" target="_blank" rel="noopener">Toc al Mar</a>, down on Aiguablava sand</dd>
+        <dt>Dinner</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Fonda Caner Begur" target="_blank" rel="noopener">Fonda Caner</a> (classic Empordà) · <a href="https://www.google.com/maps/search/?api=1&query=Restaurant Rostei Begur" target="_blank" rel="noopener">Rostei</a> (the splurge courtyard)</dd>
+        <dt>Kids</dt><dd>Tortilla francesa, grilled chicken + fries, plain pasta — the universal ask; both dinner picks handle it</dd>
+        <dt>Gelato</dt><dd>Follow the evening queue on the way up to the castle — it's never wrong</dd>
+        <dt>Parking</dt><dd>Old town is residents-only — signed municipal lots below (Plaça Forgas side), then a 5-min uphill walk</dd>
+        <dt>Stroller</dt><dd>Town: fine, gentle slopes. Castle path: no wheels — carry the littlest the last stretch</dd>
+        <dt>Time</dt><dd>Evenings × 3</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Begur_from_the_castle.jpg/1920px-Begur_from_the_castle.jpg" data-page="https://commons.wikimedia.org/wiki/File:Begur_from_the_castle.jpg" alt="Begur rooftops from the castle" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Parador_vist_desde_cami_de_ronda.JPG/1920px-Parador_vist_desde_cami_de_ronda.JPG" data-page="https://commons.wikimedia.org/wiki/File:Parador_vist_desde_cami_de_ronda.JPG" alt="Rocky coast at Cap sa Sal near Begur" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Begur_Sa_Tuna_01_JMM.JPG/1920px-Begur_Sa_Tuna_01_JMM.JPG" data-page="https://commons.wikimedia.org/wiki/File:Begur_Sa_Tuna_01_JMM.JPG" alt="Fishing boats at Sa Tuna, Begur" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- SA TUNA -->
+<article class="chapter" id="stop-satuna">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Platja_de_sa_Tuna_2.JPG/1920px-Platja_de_sa_Tuna_2.JPG" alt="The cove and white houses of Sa Tuna" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 297 / KM 478 · SATURDAY · THE PEBBLE OPTION</div><h2>Sa Tuna</h2><div class="tag">A pebble cove, twenty white houses, and water like bottle glass</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Platja de Sa Tuna Begur" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Platja_de_sa_Tuna_2.JPG">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> Sa Tuna is what the Costa Brava looked like before anyone invented the resort: a fishermen's hamlet wedged into a crack in the cliffs, houses whitewashed by law, no hotels but one, no shops, no noise except halyards. Josep Pla wrote about it; nothing much has changed since.</p>
+      <p><strong>The swim.</strong> Smooth pebbles, so the water is absurdly clear — bring water shoes for small feet. The rocky points on either side are the best easy snorkeling of the trip — Ivan and Gael will disappear along them, while the middle of the cove stays Mayu-and-Illa calm. Morning light is the good light and the calm water.</p>
+      <p><strong>The walk.</strong> A 20-minute camí de ronda path rounds the cliff to the next cove, Aiguafreda — do it before lunch while the kids build pebble towers.</p>
+      <p><strong>Time needed.</strong> All day, if it wins the Saturday vote — it can carry it.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="satuna" aria-hidden="true"></div><div class="bh">Sa Tuna · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd>The camí de ronda bend toward Aiguafreda, 10 min up the north path</dd>
+        <dt>Beach</dt><dd>This is the beach — 80 m of pebbles, swim platform water</dd>
+        <dt>Coffee</dt><dd>Hostal Sa Tuna's terrace, the only game in town — happily</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Hostal Sa Tuna Begur" target="_blank" rel="noopener">Hostal Sa Tuna</a> (the fish stew) · <a href="https://www.google.com/maps/search/?api=1&query=Hostal Sa Rascassa Begur" target="_blank" rel="noopener">Sa Rascassa</a> at Aiguafreda cove</dd>
+        <dt>Dinner</dt><dd>Come back some other trip — evenings here are for residents</dd>
+        <dt>Kids</dt><dd>Both lunch spots are family houses — grilled chicken or a plain omelette is home cooking, just ask</dd>
+        <dt>Gelato</dt><dd>None. Ice cream lives up in Begur; consider it the excuse</dd>
+        <dt>Parking</dt><dd>One tiny lot above the cove, 3-min steep lane down — full by 10:00 in July. Arrive 9:15 or park at Aiguafreda and walk the path in</dd>
+        <dt>Stroller</dt><dd>Leave it — 100 m of pebbles; everyone in this crew walks it</dd>
+        <dt>Time</dt><dd>All day, if picked for Saturday</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Cala_Sa_Tuna.JPG/1920px-Cala_Sa_Tuna.JPG" data-page="https://commons.wikimedia.org/wiki/File:Cala_Sa_Tuna.JPG" alt="Sa Tuna village across the water" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Platja_de_sa_Tuna_1.JPG/1920px-Platja_de_sa_Tuna_1.JPG" data-page="https://commons.wikimedia.org/wiki/File:Platja_de_sa_Tuna_1.JPG" alt="Clear water at Cala Sa Tuna" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Parador_vist_desde_cami_de_ronda.JPG/1920px-Parador_vist_desde_cami_de_ronda.JPG" data-page="https://commons.wikimedia.org/wiki/File:Parador_vist_desde_cami_de_ronda.JPG" alt="The rocky coast path near Sa Tuna" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- AIGUABLAVA -->
+<article class="chapter" id="stop-aiguablava">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Cala_d%27Aiguablava%2C_Begur.jpg/1920px-Cala_d%27Aiguablava%2C_Begur.jpg" alt="Aiguablava beach and its turquoise water" loading="lazy">
+    <div class="ch-hero-grad"></div>
+    <div class="ttl"><div class="in"><div class="km">MI 303 / KM 488 · SATURDAY · THE SAND OPTION</div><h2>Aiguablava</h2><div class="tag">The postcard the whole coast is judged against</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Platja d'Aiguablava Begur" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Cala_d'Aiguablava,_Begur.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> The name means "blue water" and undersells it. A wide, shallow wedge of coarse golden sand facing exactly the right way, pines to the tide line, and the village of Fornells hanging over the far side of the bay. If the family has "already experienced Mediterranean beaches," this is the one that re-runs the experiment with better inputs.</p>
+      <p><strong>For the kids.</strong> The sandy bottom shelves gently for a long way — the most relaxed supervising of the trip. Kayak and SUP rentals on the sand in summer.</p>
+      <p><strong>The sunset move.</strong> No sunset over the water on this coast — instead, drinks on the Parador terrace on the cliff above while the bay goes pink below. Kids get the pool-deck view; adults get five minutes of silence.</p>
+      <p><strong>Time needed.</strong> All day, if it wins the Saturday vote — Toc al Mar keeps lunch on the sand.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="aiguablava" aria-hidden="true"></div><div class="bh">Aiguablava · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd>Parador de Aiguablava terrace, or the camí de ronda toward Fornells</dd>
+        <dt>Beach</dt><dd>Platja d'Aiguablava, plus tiny Platja de Fornells around the point</dd>
+        <dt>Coffee</dt><dd>Beach-bar cortado standing in the sand</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Toc al Mar Begur" target="_blank" rel="noopener">Toc al Mar</a> — wild fish over oak coals</dd>
+        <dt>Dinner</dt><dd>Up in Begur old town now — but the Parador's Mar i Vent covers a view dinner if nobody wants to leave the bay</dd>
+        <dt>Kids</dt><dd>Grilled chicken from the same oak grill; sand to dig in between courses — the easiest dinner of the trip</dd>
+        <dt>Gelato</dt><dd>Beach kiosk cones do the job; the real stuff is up in Begur</dd>
+        <dt>Parking</dt><dd>Paid lot behind the beach, 2 flat minutes to the sand — full 10:30–15:00 in July. Come early or mid-afternoon; never circle at noon</dd>
+        <dt>Stroller</dt><dd>Not needed — the walk is 2 minutes. Skip it on the camí de ronda (steps)</dd>
+        <dt>Time</dt><dd>All day, if picked for Saturday</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Fornells_2022-10-27_15.35.20.jpg/1920px-Fornells_2022-10-27_15.35.20.jpg" data-page="https://commons.wikimedia.org/wiki/File:Fornells_2022-10-27_15.35.20.jpg" alt="Fornells village on the bay of Aiguablava" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Platja_d%27Aiguablava%2C_2.jpg/1920px-Platja_d%27Aiguablava%2C_2.jpg" data-page="https://commons.wikimedia.org/wiki/File:Platja_d'Aiguablava,_2.jpg" alt="Pines over the cove at Aiguablava" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Platja_d%27Aiguablava.jpg/1920px-Platja_d%27Aiguablava.jpg" data-page="https://commons.wikimedia.org/wiki/File:Platja_d'Aiguablava.jpg" alt="The turquoise cove of Aiguablava from above" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- CALELLA -->
+<article class="chapter" id="stop-calella">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Calella_de_Palafrugell_-_53619347398.jpg/1920px-Calella_de_Palafrugell_-_53619347398.jpg" alt="Calella de Palafrugell from the sea" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 309 / KM 497 · FLEX STOP · ANY EVENING</div><h2>Calella de Palafrugell</h2><div class="tag">White arcades, beached fishing boats, and the coast's prettiest walking path</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Calella de Palafrugell" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell_-_53619347398.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> Ten minutes from Begur, Calella is the village the havaneres — Catalan sailors' songs — come home to. Boats are still winched up onto the sand under the whitewashed arcades of Port Bo, and the town has fiercely resisted every tall building ever proposed. It's the liveliest of the coves: shops, terraces, families promenading at 8 pm.</p>
+      <p><strong>The walk.</strong> The camí de ronda from Port Bo south to the Golfet tunnel, or north 25 minutes to Llafranc's marina — flat enough for everyone, ocean the whole way. Go at 7 pm when the light goes honey-colored and dinner is the destination.</p>
+      <p><strong>Fits where?</strong> Slot it as a second-evening outing, or swap it into Saturday if the Aiguablava lot defeats you.</p>
+      <p><strong>Time needed.</strong> An evening — walk, swim off Canadell, dinner.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="calella" aria-hidden="true"></div><div class="bh">Calella · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd>The camí de ronda bend above El Golfet</dd>
+        <dt>Beach</dt><dd>Platja del Canadell — sand, boats, the classic frontage</dd>
+        <dt>Coffee</dt><dd>A Port Bo arcade table, watching the boats</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Tragamar Calella de Palafrugell" target="_blank" rel="noopener">Tragamar</a>, right on Canadell sand</dd>
+        <dt>Dinner</dt><dd>Tragamar at dusk, or any Port Bo terrace doing suquet</dd>
+        <dt>Kids</dt><dd>Beachfront tables mean kids on the sand in sight; grilled chicken / plain pasta on request everywhere here</dd>
+        <dt>Gelato</dt><dd>The passeig gelateria queue after dinner — join it</dd>
+        <dt>Parking</dt><dd>Big signed lots at the town entrance; the seafront itself is car-free. 10-min gentle downhill walk</dd>
+        <dt>Stroller</dt><dd>Yes — the promenade is flat, and the path to Llafranc (25 min) is the coast's most stroller-friendly stretch</dd>
+        <dt>Time</dt><dd>One golden evening</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Calella_de_Palafrugell_-_Placa_Port-Bo.jpg/1920px-Calella_de_Palafrugell_-_Placa_Port-Bo.jpg" data-page="https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell_-_Placa_Port-Bo.jpg" alt="Plaça Port Bo arcades, Calella de Palafrugell" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Calella_de_Palafrugell-.jpg/1920px-Calella_de_Palafrugell-.jpg" data-page="https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell-.jpg" alt="Beach and boats at Calella de Palafrugell" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Cam%C3%AD_de_Ronda_%28Calella_de_Palafrugell%29_2022-10-24_13.28.23.jpg/1920px-Cam%C3%AD_de_Ronda_%28Calella_de_Palafrugell%29_2022-10-24_13.28.23.jpg" data-page="https://commons.wikimedia.org/wiki/File:Camí_de_Ronda_(Calella_de_Palafrugell)_2022-10-24_13.28.23.jpg" alt="Camí de ronda coastal path at Calella" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- CADAQUES -->
+<article class="chapter" id="stop-cadaques">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Cadaqu%C3%A9s_BW_2019-10-08_11-08-02.jpg/1920px-Cadaqu%C3%A9s_BW_2019-10-08_11-08-02.jpg" alt="Whitewashed waterfront of Cadaqués" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 368 / KM 593 · SUNDAY</div><h2>Cadaqués</h2><div class="tag">The white town at the end of the mountain road — Dalí's, and now yours</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Cadaqués Spain" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Cadaqués_BW_2019-10-08_11-08-02.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> Cadaqués is hard to get to — one twisting road over the Cap de Creus massif — and that road is why it's still perfect. Too far for day-tripping crowds from Barcelona, it stayed a painters' town: white houses, slate streets polished by 500 years of feet, blue shutters by decree. Dalí summered here as a boy and settled next door in Portlligat for fifty years; Picasso, Miró, Duchamp and García Lorca all came through.</p>
+      <p><strong>The drive in.</strong> From Roses the road hairpins up through olive terraces and bare rock with the sea appearing on both sides — the single most scenic 30 minutes of driving on the trip. Queasy kids in front.</p>
+      <p><strong>The walking route.</strong> Land on the Riba waterfront → coffee → climb the lanes to Santa Maria church (the view back over the bay is the town's best) → over the hill 20 minutes to Portlligat and the egg-topped Dalí house → loop back for lunch. All of it unhurried: two and a half hours.</p>
+      <p><strong>Time needed.</strong> The full Sunday, paired with Cap de Creus.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="cadaques" aria-hidden="true"></div><div class="bh">Cadaqués · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd>Church of Santa Maria terrace, over white roofs to the bay</dd>
+        <dt>Beach</dt><dd>Es Llané, the small town beach below the Riba — a dip, not a session</dd>
+        <dt>Coffee</dt><dd>Any Riba waterfront terrace at 10:45 — the town's front row</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Casa Anita Cadaqués" target="_blank" rel="noopener">Casa Anita</a> (shared tables, owner decides — an institution) · <a href="https://www.google.com/maps/search/?api=1&query=Compartir Cadaqués" target="_blank" rel="noopener">Compartir</a> if booked ahead</dd>
+        <dt>Dinner</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Es Baluard Cadaqués" target="_blank" rel="noopener">Es Baluard</a> on the seafront, early sitting</dd>
+        <dt>Kids</dt><dd>Casa Anita cooks like a grandmother's kitchen — say what they eat and it appears; seafront terraces all do chicken + fries</dd>
+        <dt>Gelato</dt><dd>The gelateria on the passeig facing the boats — post-lunch ritual</dd>
+        <dt>Parking</dt><dd>Don't enter the old town. Big paid lot at the village entrance (Riera Sant Vicenç), 10-min mostly-flat walk to the Riba — arrive before 11 on summer Sundays</dd>
+        <dt>Stroller</dt><dd>Bring it — the waterfront and the paved Portlligat walk are stroller-easy; park it for the steep old-town lanes</dd>
+        <dt>Time</dt><dd>A day, happily</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Cadaqu%C3%A9s_BW_2019-10-08_11-14-46.jpg/1920px-Cadaqu%C3%A9s_BW_2019-10-08_11-14-46.jpg" data-page="https://commons.wikimedia.org/wiki/File:Cadaqués_BW_2019-10-08_11-14-46.jpg" alt="Cadaqués rooftops and bay from the church" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Sant_Maria_Cadaqu%C3%A9s.JPG/1920px-Sant_Maria_Cadaqu%C3%A9s.JPG" data-page="https://commons.wikimedia.org/wiki/File:Sant_Maria_Cadaqués.JPG" alt="Church of Santa Maria, Cadaqués" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Casa_Salvador_Dal%C3%AD_de_Portlligat_%28Cadaqu%C3%A9s%29_-_1.jpg/1920px-Casa_Salvador_Dal%C3%AD_de_Portlligat_%28Cadaqu%C3%A9s%29_-_1.jpg" data-page="https://commons.wikimedia.org/wiki/File:Casa_Salvador_Dalí_de_Portlligat_(Cadaqués)_-_1.jpg" alt="Salvador Dalí's house at Portlligat" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- CAP DE CREUS -->
+<article class="chapter" id="stop-capdecreus">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Cap_de_Creus%2C_Catalonia.jpg/1920px-Cap_de_Creus%2C_Catalonia.jpg" alt="The wild coast of Cap de Creus" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 373 / KM 601 · SUNDAY EVENING</div><h2>Cap de Creus</h2><div class="tag">Mainland Spain's easternmost rock — a lighthouse, wind-carved cliffs, the end of the map</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Far de Cap de Creus" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Cap_de_Creus,_Catalonia.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why it's worth the extra 20 minutes.</strong> Past Cadaqués the road narrows to a single lane through a landscape Dalí painted over and over because he didn't have to invent anything: slate folded into waves, rocks eroded into animals, no trees, two horizons of sea. At the tip stands the 1853 lighthouse and below it, cliffs dropping into water so clear the boats look parked on air.</p>
+      <p><strong>What you do.</strong> Park below the lighthouse, then wander — smooth rock paths lead to coves and outcrops in every direction, and the kids will treat it as the planet's best climbing gym (watch edges; it's a natural park, not a playground). The bar-restaurant in the lighthouse compound does drinks with the best table in Spain.</p>
+      <p><strong>The light.</strong> Late afternoon turns the whole cape copper, and it's the first place in Spain the sun rises — sunset behind the hills is still spectacular, but golden hour is the show. Leave by 7 for the early Cadaqués dinner plan.</p>
+      <p><strong>Time needed.</strong> Two hours, plus the drive both ways.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="capdecreus" aria-hidden="true"></div><div class="bh">Cap de Creus · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd>The lighthouse platform — then any rock 10 minutes past it</dd>
+        <dt>Beach</dt><dd>None to speak of — this stop is for cliffs, not towels</dd>
+        <dt>Coffee</dt><dd>The lighthouse bar terrace, 360° of sea</dd>
+        <dt>Lunch</dt><dd>Better eaten in Cadaqués; up here keep it to drinks and views</dd>
+        <dt>Dinner</dt><dd>Back in Cadaqués by 7 — see previous chapter</dd>
+        <dt>Kids</dt><dd>The rocks are the entertainment — bring snacks, water and closed shoes; save the meal for town</dd>
+        <dt>Gelato</dt><dd>Bring cold water instead — there's wind, sun and rock up here</dd>
+        <dt>Parking</dt><dd>Lot below the lighthouse, 5-min uphill walk; in peak weeks access can be regulated — going late afternoon dodges both heat and rangers</dd>
+        <dt>Stroller</dt><dd>No — all rock. Illa rides a hip near the edges; Ivan and Gael will treat it as a bouldering gym</dd>
+        <dt>Time</dt><dd>2 hours + drive</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Far_del_cap_de_creus_-_panoramio.jpg/1920px-Far_del_cap_de_creus_-_panoramio.jpg" data-page="https://commons.wikimedia.org/wiki/File:Far_del_cap_de_creus_-_panoramio.jpg" alt="Cap de Creus lighthouse" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Far_de_Cap_de_Creus_%28agost_2007%29_-_panoramio.jpg/1920px-Far_de_Cap_de_Creus_%28agost_2007%29_-_panoramio.jpg" data-page="https://commons.wikimedia.org/wiki/File:Far_de_Cap_de_Creus_(agost_2007)_-_panoramio.jpg" alt="The lonely road to Cap de Creus" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/From_Cap_de_Creus%2C_direction_to_Cadaqu%C3%A9s.jpg/1920px-From_Cap_de_Creus%2C_direction_to_Cadaqu%C3%A9s.jpg" data-page="https://commons.wikimedia.org/wiki/File:From_Cap_de_Creus,_direction_to_Cadaqués.jpg" alt="View from Cap de Creus toward Cadaqués" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- PALS -->
+<article class="chapter" id="stop-pals">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Castell_de_Pals_-_1.jpg/1920px-Castell_de_Pals_-_1.jpg" alt="Golden stone lanes of medieval Pals" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 416 / KM 670 · MONDAY MORNING</div><h2>Pals</h2><div class="tag">A thousand-year-old hill town, restored stone by golden stone</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Pals Girona Spain" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Castell_de_Pals_-_1.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p><strong>Why locals love it.</strong> Pals was a half-ruined medieval village until the 1950s, when one determined doctor spent decades restoring it. The result is the Empordà's most complete Gothic quarter: ramp-smooth stone lanes, pointed arches, flower pots on every sill, and the round Torre de les Hores keeping time over it all. Yes, other people visit it — on a Monday morning before the buses, it's yours.</p>
+      <p><strong>The walking route.</strong> Enter at the bottom of Carrer Major → spiral up past the church of Sant Pere → Torre de les Hores → finish at the Mirador Josep Pla, where the view runs over rice paddies to the Medes islands. Forty-five slow minutes; the town rewards zero planning.</p>
+      <p><strong>The detail for the kids.</strong> Pals grows rice — the arroz on every menu here was in a paddy you can see from the mirador. Order it at Vicus and close the loop.</p>
+      <p><strong>Time needed.</strong> 90 minutes plus lunch — a perfect final morning.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="pals" aria-hidden="true"></div><div class="bh">Pals · The best of</div>
+      <dl>
+        <dt>Viewpoint</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Mirador Josep Pla Pals" target="_blank" rel="noopener">Mirador Josep Pla</a> — paddies, plain, sea, Medes islands</dd>
+        <dt>Beach</dt><dd>Platja de Pals is nearby but skip it today — Barcelona calls</dd>
+        <dt>Coffee</dt><dd>The café terraces just outside the walled quarter</dd>
+        <dt>Lunch</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Vicus Restaurant Pals" target="_blank" rel="noopener">Vicus</a> — Michelin-listed seasonal Catalan; the local rice is the order</dd>
+        <dt>Dinner</dt><dd>You'll be eating in Barcelona — aim the appetite there</dd>
+        <dt>Kids</dt><dd>Plain rice or grilled chicken at Vicus is a normal request — mention them when you book</dd>
+        <dt>Gelato</dt><dd>One for the road from the shops by the lower gate</dd>
+        <dt>Parking</dt><dd>Free-and-paid lots ring the old quarter; it's pedestrian inside. 2-min walk to the gate</dd>
+        <dt>Stroller</dt><dd>Doable but bumpy — smooth stone, slopes, a few steps to lift over. Fine to bring for the littlest</dd>
+        <dt>Time</dt><dd>90 min + lunch</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/%F0%9F%87%AA%F0%9F%87%B8_%F0%9F%87%AA%F0%9F%87%BA_Pals_%28Catalu%C3%B1a%2C_Espa%C3%B1a%2C_9-6-2024%29_%2854116249884%29.jpg/1920px-%F0%9F%87%AA%F0%9F%87%B8_%F0%9F%87%AA%F0%9F%87%BA_Pals_%28Catalu%C3%B1a%2C_Espa%C3%B1a%2C_9-6-2024%29_%2854116249884%29.jpg" data-page="https://commons.wikimedia.org/wiki/File:🇪🇸_🇪🇺_Pals_(Cataluña,_España,_9-6-2024)_(54116249884).jpg" alt="Stone gate and cypress in Pals" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/04_La_torre_de_les_Hores%2C_des_del_cam%C3%AD_Fondo_%28Pals%29.jpg/1920px-04_La_torre_de_les_Hores%2C_des_del_cam%C3%AD_Fondo_%28Pals%29.jpg" data-page="https://commons.wikimedia.org/wiki/File:04_La_torre_de_les_Hores,_des_del_camí_Fondo_(Pals).jpg" alt="Torre de les Hores, Pals" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Pals_-_004.jpg" data-page="https://commons.wikimedia.org/wiki/File:Pals_-_004.jpg" alt="Ivy-covered stone houses in Pals" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- BARCELONA -->
+<article class="chapter" id="stop-barcelona">
+  <div class="ch-hero rv">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aerial_View_of_Barcelona_While_Landing.jpg/1920px-Aerial_View_of_Barcelona_While_Landing.jpg" alt="Barcelona from the sea" loading="lazy">
+    <div class="ttl"><div class="in"><div class="km">MI 497 / KM 799 · ARRIVAL · MONDAY 16:00</div><h2>Barcelona</h2><div class="tag">Roll in rested, fed, and full of coves — at 4 pm as promised</div><a class="mapslink" href="https://www.google.com/maps/search/?api=1&query=Barcelona Spain" target="_blank" rel="noopener">⌖ Open in Google Maps</a></div></div>
+    <div class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Aerial_View_of_Barcelona_While_Landing.jpg">Wikimedia Commons</a></div>
+  </div>
+  <div class="ch-body">
+    <div class="prose rv">
+      <p>The C-32 delivers you into the city with the sea still on your left, at 4 pm on the dot. Sequence matters with seven people: Airbnb first, everyone and everything out of the car, then an hour or two of doing absolutely nothing. Only then does one adult run the car to the rental office — Sants station desks keep evening hours, and the metro or a ten-minute taxi brings you home. Gelato on the walk back; Gaudí tomorrow.</p>
+      <p>Arriving by road on a Monday afternoon beats arriving at the airport in every measurable way: no baggage claim, no taxi line for seven, and everyone already napped in the car.</p>
+    </div>
+    <aside class="bests rv">
+      <div class="minimap" data-stop="barcelona" aria-hidden="true"></div><div class="bh">First-evening moves</div>
+      <dl>
+        <dt>Coffee</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=Nomad Coffee Barcelona" target="_blank" rel="noopener">Nømad</a> or <a href="https://www.google.com/maps/search/?api=1&query=Satan's Coffee Corner Barcelona" target="_blank" rel="noopener">Satan's Coffee Corner</a> — the city's specialty-coffee royalty</dd>
+        <dt>Gelato</dt><dd><a href="https://www.google.com/maps/search/?api=1&query=DelaCrem Barcelona" target="_blank" rel="noopener">DelaCrem</a> · <a href="https://www.google.com/maps/search/?api=1&query=Rocambolesc Barcelona" target="_blank" rel="noopener">Rocambolesc</a> (Jordi Roca's candy-shop take)</dd>
+        <dt>Dinner</dt><dd>A no-reservation tapas crawl in Gràcia beats a booking tonight — tortilla, croquetas and pa amb tomàquet are already kid food</dd>
+        <dt>Car return</dt><dd>Unload everyone at the Airbnb first, decompress an hour, then one adult returns it at Sants station (evening hours; metro or 10-min taxi back). Skip the airport return</dd>
+      </dl>
+    </aside>
+  </div>
+  <div class="wrapwide"><div class="gal rv">
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Sagrada_Fam%C3%ADlia_2010.JPG/1920px-Sagrada_Fam%C3%ADlia_2010.JPG" data-page="https://commons.wikimedia.org/wiki/File:Sagrada_Família_2010.JPG" alt="Sagrada Família" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Barcelona_parc_G%C3%BCell_la_placa_2013_04.jpg/1920px-Barcelona_parc_G%C3%BCell_la_placa_2013_04.jpg" data-page="https://commons.wikimedia.org/wiki/File:Barcelona_parc_Güell_la_placa_2013_04.jpg" alt="Park Güell terrace view over Barcelona" loading="lazy"></figure>
+    <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Barcelona_Parc_G%C3%BCell_el_drac.jpg/1920px-Barcelona_Parc_G%C3%BCell_el_drac.jpg" data-page="https://commons.wikimedia.org/wiki/File:Barcelona_Parc_Güell_el_drac.jpg" alt="The mosaic dragon of Park Güell" loading="lazy"></figure>
+  </div></div>
+</article>
+
+<!-- ============ BEACHES ============ -->
+<section id="beaches" style="background:var(--wash)">
+  <div class="wrapwide">
+    <div class="rv wrap" style="padding:0;max-width:720px;margin:0">
+      <div class="kicker">The water</div>
+      <h2>Beach report card</h2>
+      <p class="lede">Every cove on the weekend's rotation, graded on what actually matters with kids aged 3, 6, 9 and 16.</p>
+    </div>
+    <div class="beaches rv" id="beachcards"></div>
+    <p style="margin-top:14px;font:12px var(--mono);color:var(--ink3)">Ratings are editorial, calibrated for a family of seven in July.</p>
+  </div>
+</section>
+
+<!-- ============ HOTELS ============ -->
+<section id="hotels">
+  <div class="wrapwide">
+    <div class="rv" style="max-width:720px">
+      <div class="kicker">Where to sleep</div>
+      <h2>The Airbnb hunt: where to point it</h2>
+      <p class="lede">Decision made — it's an Airbnb. For seven, look for a whole house with a pool and book it this week. Two zones work best; the hotels below are still worth knowing, because two of them are on your itinerary as terraces, not beds. Prices are approximate July peak.</p>
+    </div>
+    <div class="hotels rv">
+      <div class="hotel"><div class="tier">Your plan · zone 1</div><h4>Villa near Begur old town / Sa Riera / Esclanyà</h4><div class="pr">≈ €350–700 / night, whole house</div><p>The bullseye: a pool villa in Residencial Begur, Sa Riera or Esclanyà. One kitchen for the villa breakfasts, breakfast in swimsuits, walkable (or 3-min drive) to Begur dinners, and under ten minutes to Sa Tuna and Aiguablava. Filter: pool, 4+ bedrooms, parking, A/C.</p></div>
+      <div class="hotel"><div class="tier">Your plan · zone 2</div><h4>Tamariu or Llafranc apartment/house</h4><div class="pr">≈ €300–550 / night</div><p>Beachfront-village alternative: quieter Tamariu or polished Llafranc, walk-to-beach, Calella one cove over for the evening promenade. Trade-off: 15 min instead of 8 to Sa Tuna / Aiguablava mornings.</p></div>
+      <div class="hotel"><div class="tier">On your itinerary anyway</div><h4><a href="https://www.google.com/maps/search/?api=1&query=Parador de Aiguablava Begur" target="_blank" rel="noopener" style="color:inherit">Parador de Aiguablava ⌖</a></h4><div class="pr">Sunset drinks</div><p>The modernist state hotel alone on the cliff above Aiguablava — you're using its terrace Saturday at 7:30 pm. Rooms ≈ €260–380 if you ever want the pure-view version of this trip.</p></div>
+      <div class="hotel"><div class="tier">On your itinerary anyway</div><h4><a href="https://www.google.com/maps/search/?api=1&query=Hostal Sa Tuna Begur" target="_blank" rel="noopener" style="color:inherit">Hostal Sa Tuna</a> &amp; <a href="https://www.google.com/maps/search/?api=1&query=Hotel Aigua Blava Begur" target="_blank" rel="noopener" style="color:inherit">Hotel Aigua Blava</a> ⌖</h4><div class="pr">Lunch · a view</div><p>Hostal Sa Tuna is Saturday's beach lunch; family-run Hotel Aigua Blava on Fornells point is the backup lunch with the garden view. Both are also five-room-scale stays worth remembering for a couples' return trip.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WEATHER ============ -->
+<section id="weather" class="tight" style="background:var(--wash)">
+  <div class="wrapwide">
+    <div class="rv" style="max-width:720px">
+      <div class="kicker">Conditions</div>
+      <h2>Your actual forecast, stop by stop</h2>
+      <p class="lede">Real hourly forecast for each place at the hour you'll be standing in it — pulled July 12 from Open-Meteo. Verdict: sun the whole way, zero meaningful rain risk, sea at 79°F.</p>
+    </div>
+    <div class="wx rv">
+      <div class="tile"><div class="v">0–6<small>%</small></div><div class="l">Max rain chance, any stop</div></div>
+      <div class="tile"><div class="v">79°<small>F</small></div><div class="l">Sea temp, Begur coves (26°C)</div></div>
+      <div class="tile"><div class="v">90°<small>F</small></div><div class="l">Hottest moment (Peñíscola, Fri noon)</div></div>
+      <div class="tile"><div class="v">21:19</div><div class="l">Sunset, all four nights</div></div>
+    </div>
+    <div class="scrollx rv">
+      <table>
+        <thead><tr><th>When you're there</th><th>Place</th><th>Temp °F (°C)</th><th>Feels</th><th>Sky</th><th>Rain</th><th>Wind</th></tr></thead>
+        <tbody>
+          <tr><td>Fri 9:30</td><td><b>Valencia</b> · departure</td><td>81° (27°)</td><td>88°</td><td>Clear</td><td>0%</td><td>3 km/h</td></tr>
+          <tr><td>Fri 12:00</td><td><b>Peñíscola</b> · ramparts + lunch</td><td>90° (32°)</td><td>93°</td><td>Clear</td><td>0%</td><td>7 km/h</td></tr>
+          <tr><td>Fri 19:00</td><td><b>Begur</b> · castle walk</td><td>81° (27°)</td><td>84°</td><td>Partly cloudy</td><td>0%</td><td>6 km/h</td></tr>
+          <tr><td>Sat 10:00</td><td><b>Sa Tuna</b> · beach morning</td><td>81° (27°)</td><td>86°</td><td>Clear</td><td>0%</td><td>3 km/h</td></tr>
+          <tr><td>Sat 16:00</td><td><b>Aiguablava</b> · beach afternoon</td><td>84° (29°)</td><td>88°</td><td>Clear</td><td>0%</td><td>14 km/h</td></tr>
+          <tr><td>Sun 11:00</td><td><b>Cadaqués</b> · town wander</td><td>82° (28°)</td><td>82°</td><td>Sunny</td><td>0%</td><td>15 km/h</td></tr>
+          <tr><td>Sun 17:00</td><td><b>Cap de Creus</b> · lighthouse</td><td>88° (31°)</td><td>90°</td><td>Sun + clouds</td><td>1%</td><td>12 km/h</td></tr>
+          <tr><td>Mon 10:00</td><td><b>Pals</b> · old town</td><td>81° (27°)</td><td>82°</td><td>Clear</td><td>2%</td><td>7 km/h</td></tr>
+          <tr><td>Mon 16:00</td><td><b>Barcelona</b> · arrival</td><td>86° (30°)</td><td>88°</td><td>Sunny</td><td>6%</td><td>12 km/h</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rv" style="margin-top:22px;color:var(--ink2);font-size:15px;max-width:720px">Read of the week: Friday's Peñíscola stop is the hot one — do the ramparts before lunch, not after. Beach mornings are calm and clear; Cadaqués Sunday carries a 15 km/h breeze, which up at the cape means hats that fit. The one regional wildcard is always the <strong>tramuntana</strong> north wind — nothing in this forecast suggests it, but if it shows, the cape gets wilder and the Begur coves stay sheltered.</p>
+    <p class="rv" style="margin-top:12px;font:12px var(--mono);color:var(--ink3)">Forecast: Open-Meteo hourly, retrieved Sun Jul 12 for Jul 17–20. Sea temp: Open-Meteo marine, Begur coast. Re-check the day before — it's a forecast, not a promise.</p>
+  </div>
+</section>
+
+<!-- ============ FOOD ============ -->
+<section id="food">
+  <div class="wrapwide">
+    <div class="rv" style="max-width:720px">
+      <div class="kicker">Eating &amp; drinking</div>
+      <h2>The food map</h2>
+      <p class="lede">You loved Casa Montaña's bodega and Simple Bodega's cooking — this coast speaks the same language: anchovies, rice, grills, and local Empordà wine. Meal by meal, in trip order — every named place links to its menu so you can preview and confirm before booking.</p>
+    </div>
+    <div class="scrollx rv">
+      <table class="foodtbl">
+        <thead><tr><th>Day</th><th>Breakfast &amp; coffee</th><th>Lunch</th><th>Dinner</th><th>Sweet finish</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Friday<br><small style="color:var(--ink3)">Valencia → Begur</small></td>
+            <td>Your Valencia spots, one last time — out by ~9:30</td>
+            <td>Peñíscola — terraces under the castle walls; walk-up, no booking. Paella / arroz a banda; chicken + fries for the kids</td>
+            <td><a href="http://fondacaner.com/" target="_blank" rel="noopener">Fonda Caner</a> (classic Empordà, ~€30 menu) or <a href="https://www.restaurant-rostei.com/menu-restaurant-rostei/" target="_blank" rel="noopener">Rostei</a> (the splurge courtyard) — book one tonight, the other Saturday; mention 4 kids</td>
+            <td>The gelato queue on the Begur castle walk</td>
+          </tr>
+          <tr>
+            <td>Saturday<br><small style="color:var(--ink3)">The coves</small></td>
+            <td>Villa eggs &amp; toast (the one strategic breakfast — beats the Sa Tuna lot)</td>
+            <td>At your cove: <a href="https://www.tocalmar.cat/wp-content/uploads/2026/03/CARTA-ANGLES.pdf" target="_blank" rel="noopener">Toc al Mar</a> on Aiguablava sand (that link is the real English menu PDF) or <a href="https://www.hostalsatuna.com/en/restaurant/" target="_blank" rel="noopener">Hostal Sa Tuna</a>'s beach terrace (menu photos on the page)</td>
+            <td>Begur old town: <a href="http://fondacaner.com/" target="_blank" rel="noopener">Fonda Caner</a> or <a href="https://www.restaurant-rostei.com/menu-restaurant-rostei/" target="_blank" rel="noopener">Rostei</a> — whichever Friday didn't get. Sunset drinks first at the <a href="https://www.parador.es/en/paradores/parador-de-aiguablava" target="_blank" rel="noopener">Parador terrace</a></td>
+            <td>Beach-kiosk cones, sandy and correct</td>
+          </tr>
+          <tr>
+            <td>Sunday<br><small style="color:var(--ink3)">Cadaqués day</small></td>
+            <td>Villa, quick — coffee properly on the Riba waterfront at ~11</td>
+            <td><a href="https://bravissima.cat/en/i/1884-casa-anita/" target="_blank" rel="noopener">Casa Anita</a> — deliberately NO menu: the owner decides (that page has photos + reviews) · or <a href="https://www.compartircadaques.com/" target="_blank" rel="noopener">Compartir</a> — the date-for-two option with Lexi on kid duty</td>
+            <td><a href="https://esbaluard-cadaques.net/en/carta.html" target="_blank" rel="noopener">Es Baluard</a> on the seafront — that's their real carta: croquetas, fried squid, suquet</td>
+            <td>Gelateria on the passeig, facing the boats</td>
+          </tr>
+          <tr>
+            <td>Monday<br><small style="color:var(--ink3)">Pals → Barcelona</small></td>
+            <td><a href="https://www.tripadvisor.com/Restaurant_Review-g609015-d26337996-Reviews-Fitzroy_Cafe-Begur_Costa_Brava_Province_of_Girona_Catalonia.html" target="_blank" rel="noopener">Fitzroy Café</a>, Begur — pancakes, eggs, avo toast, flat whites (from 9:00)</td>
+            <td><a href="https://www.vicusrestaurant.com/en/menus/" target="_blank" rel="noopener">Vicus</a>, Pals — that link has all their menus; order the local Pals rice</td>
+            <td>Barcelona: no-reservation tapas crawl in Gràcia — tortilla + croquetas are already kid food</td>
+            <td><a href="https://www.delacrem.cat/" target="_blank" rel="noopener">DelaCrem</a> or <a href="https://www.rocambolesc.com/" target="_blank" rel="noopener">Rocambolesc</a>; tomorrow's coffee = <a href="https://nomadcoffee.es/" target="_blank" rel="noopener">Nømad</a> / <a href="https://satanscoffee.com/" target="_blank" rel="noopener">Satan's</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rv" style="margin-top:20px;border:1px solid var(--hair);border-radius:14px;padding:18px 20px;background:var(--wash);max-width:760px">
+      <p style="font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:8px">The kids clause — every lunch &amp; dinner</p>
+      <p style="font-size:15px;color:var(--ink2)">Spain has a universal kids' menu that isn't printed anywhere: <strong>tortilla francesa</strong> (a plain French omelette — their scrambled eggs), <strong>grilled chicken with fries</strong>, and <strong>plain pasta</strong>. Every kitchen on this itinerary, from beach hostal to Michelin-listed Vicus, will make these on request — the move is to order the kids' food <em>with the drinks</em>, before the adult order, so it lands first and buys the table an hour. When booking Rostei, Compartir or Vicus, mention four kids; nobody on this coast blinks at a family table.</p>
+    </div>
+    <p style="margin-top:14px;font:12px var(--mono);color:var(--ink3)">All menu links point at each restaurant's own site (or its listing page where no site exists — Fitzroy, Casa Anita); URLs verified live July 13. Fonda Caner's site is plain http — safe, just old. Wine everywhere: ask for Empordà DO, the region's own. Order L'Escala anchovies wherever you see them. Book Toc al Mar, Compartir, Rostei and Vicus ahead.</p>
+  </div>
+</section>
+
+<!-- ============ COMPARE ============ -->
+<section id="compare">
+  <div class="wrapwide">
+    <div class="rv" style="max-width:760px">
+      <div class="kicker">The showdown</div>
+      <h2>Costa Brava road trip vs. Mallorca</h2>
+      <p class="lede">Scored honestly: Mallorca is not a straw man. Its water and mountains are world-class. The case against it is everything a family of seven has to do to reach them in the third week of July.</p>
+    </div>
+    <div class="radarbox rv">
+      <div>
+        <div class="legend"><span><i style="background:#39c1dc"></i>Costa Brava drive</span><span><i style="background:#e0a24a"></i>Mallorca flight</span></div>
+        <div id="radar" role="img" aria-label="Radar chart comparing the Costa Brava road trip and Mallorca across twelve dimensions; the table below carries the same data"></div>
+      </div>
+      <div>
+        <ul class="verdictlist">
+          <li><span class="ic">→</span><span><b>Where Mallorca wins:</b> a bigger island's variety — Tramuntana mountain drives, more famous calas — and the romance of an island, full stop.</span></li>
+          <li><span class="ic">→</span><span><b>Where it loses:</b> getting there. Seven boarding passes, checked bags, PMI in July (one of Europe's busiest holiday airports), a rental counter, and the same in reverse four days later — plus Palma-area crowds at maximum.</span></li>
+          <li><span class="ic">→</span><span><b>The kicker:</b> you'd fly <em>past</em> Barcelona and back. The road trip ends at your own front door there, on time, by 4 pm.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="scrollx rv">
+      <table class="cmp">
+        <thead><tr><th>Dimension</th><th>Costa Brava drive</th><th>Mallorca</th></tr></thead>
+        <tbody>
+          <tr><td>Beauty</td><td class="win">Pine-cliff coves + medieval towns + Dalí's moonscape</td><td>Genuinely stunning — Tramuntana &amp; SE calas</td></tr>
+          <tr><td>Water color</td><td class="win">Aiguablava turquoise, glass-clear pebble coves</td><td>Equal — this one's a tie on merit</td></tr>
+          <tr><td>Crowds</td><td class="win">Coves stay village-scale; Begur is Catalans' own secret</td><td>Most-visited island in Spain, peak month</td></tr>
+          <tr><td>Driving</td><td class="win">The drive is the fun: hairpins, coves, one epic cape road</td><td>Fine roads, but you rent cars to do it</td></tr>
+          <tr><td>Flights</td><td class="win">None</td><td>2 × airport days for 7 people in high season</td></tr>
+          <tr><td>Cost</td><td class="win">Fuel ≈ €65 (AP-7 is toll-free) + lodging</td><td>7 return fares + 2 rentals + lodging</td></tr>
+          <tr><td>Stress</td><td class="win">Load the car, leave when packed</td><td>Check-in times, gates, baggage, counters × 7</td></tr>
+          <tr><td>Logistics</td><td class="win">One base, one car, zero transfers</td><td>Fly–rent–drive–return–fly chain</td></tr>
+          <tr><td>Time wasted</td><td class="win">~5h drive that IS sightseeing</td><td>Airport overhead ≈ a full day of the four, both ends</td></tr>
+          <tr><td>Family friendly</td><td class="win">Shallow sandy coves, short hops, kids nap in the car</td><td>Great once there; the getting-there is the tax</td></tr>
+          <tr><td>Restaurants</td><td class="win">Casa Anita, Compartir, Toc al Mar, Vicus — dense hit rate</td><td>Excellent too, books out further in July</td></tr>
+          <tr><td>Overall</td><td class="win">Four days of coastline, zero overhead</td><td>A great trip that costs a day of itself to reach</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rv" style="margin-top:34px">
+      <p style="font:600 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#7d919a;margin-bottom:12px">What you'd be trading away — Mallorca's own highlight reel</p>
+      <div class="gal" style="margin-top:0">
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cala_Mondrag%C3%B3_02.jpg/1920px-Cala_Mondrag%C3%B3_02.jpg" data-page="https://commons.wikimedia.org/wiki/File:Cala_Mondragó_02.jpg" alt="Cala Mondragó, Mallorca" loading="lazy"></figure>
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Palma_Cathedral_%28La_Seu%29_and_reflection_at_Parc_de_la_Mar.jpg/1920px-Palma_Cathedral_%28La_Seu%29_and_reflection_at_Parc_de_la_Mar.jpg" data-page="https://commons.wikimedia.org/wiki/File:Palma_Cathedral_(La_Seu)_and_reflection_at_Parc_de_la_Mar.jpg" alt="Palma Cathedral reflected at Parc de la Mar" loading="lazy"></figure>
+        <figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Serra_de_Tramuntana_%282016.05.17%29.jpg/1920px-Serra_de_Tramuntana_%282016.05.17%29.jpg" data-page="https://commons.wikimedia.org/wiki/File:Serra_de_Tramuntana_(2016.05.17).jpg" alt="The Sa Calobra road, Serra de Tramuntana" loading="lazy"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VERDICT ============ -->
+<section id="verdict">
+  <div class="wrap">
+    <div class="rv">
+      <div class="kicker">Final recommendation</div>
+      <h2>The call</h2>
+    </div>
+    <div class="panel rv">
+      <span class="stamp">Recommendation · Drive the coast</span>
+      <h3>Skip Mallorca. This road trip is the better trip — for this family, this week.</h3>
+      <div class="prose">
+        <p>Mallorca loses on its weakest ground: it asks a family of seven, already a week into travel, to spend two of four days on airport-and-rental logistics for beaches that are — honestly — no more beautiful than Aiguablava on a Saturday morning. You've already proven the Mediterranean beach premise in Valencia and Xàbia. What you haven't had is <em>this</em>: village-scale coves, a castle walk before dinner, a mountain road to a surrealist's town, and a medieval morning that ends at your Barcelona door by 4 pm.</p>
+      </div>
+      <div class="whyrows">
+        <div class="row"><b>Kids like road trips</b><span>This one is four short hops after Friday — 12 to 100 minutes each — with a swim at the end of every leg.</span></div>
+        <div class="row"><b>You hate airport logistics</b><span>Zero airports. The single biggest stress line-item deleted from the trip.</span></div>
+        <div class="row"><b>Most beautiful coastline</b><span>The Costa Brava's cove-and-pine stretch between Begur and Cap de Creus is the strongest four-day coastline sample in mainland Spain.</span></div>
+        <div class="row"><b>Casa Montaña taste</b><span>Casa Anita is its Cadaqués soulmate — shared tables, no menu, the owner in charge. Book Compartir for the ambitious night.</span></div>
+        <div class="row"><b>Dislike touristy places</b><span>Begur, Sa Tuna and Pals-at-9am are the anti-Lloret. Cadaqués' remoteness is a built-in crowd filter. (Mallorca in late July is the opposite bet.)</span></div>
+        <div class="row"><b>Love wandering towns</b><span>Four distinct wanders — castle-hill Begur, arcaded Calella, painters' Cadaqués, medieval Pals — each under an hour, each different.</span></div>
+      </div>
+      <div class="prose" style="margin-top:24px">
+        <p><strong>The one honest caveat:</strong> mid-July means booking the villa and the four marquee restaurants <em>this week</em>, and playing beaches early-morning / late-afternoon. Do that, and this is the trip the kids describe at school in September.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrapwide">
+    <div>Route distances and driving times from OpenStreetMap routing (OSRM); times exclude stops. Elevation, scenic ratings and beach grades are editorial. Weather is the real Open-Meteo hourly forecast for Jul 17–20, retrieved Jul 12 — re-check the day before. Hotel and restaurant prices are approximate July-peak figures — verify at booking.</div>
+    <div>Photography via Wikimedia Commons — each image links to its source page (tap any photo). Map © OpenStreetMap contributors, © CARTO.</div>
+  </div>
+</footer>
+
+<nav id="appbar" aria-label="App navigation">
+  <a href="#route" data-spy="route"><span class="i">🗺️</span>Route</a>
+  <a href="#itinerary" data-spy="itinerary"><span class="i">📅</span>Days</a>
+  <a href="#stops" data-spy="stops"><span class="i">🏖️</span>Towns</a>
+  <a href="#food" data-spy="food"><span class="i">🍽️</span>Eat</a>
+  <a href="#verdict" data-spy="verdict"><span class="i">✅</span>Verdict</a>
+</nav>
+
+<div id="lb" role="dialog" aria-label="Photo viewer"><button id="lbclose" aria-label="Close">✕</button><img alt=""><div class="cap"></div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script>
+const ROUTES = [{"from":"Valencia","to":"Begur","km":472.6,"min":322,"coords":[[39.4692,-0.3763],[39.4961,-0.3275],[39.5477,-0.2983],[39.6792,-0.2994],[39.7083,-0.2421],[39.8447,-0.1267],[39.9617,-0.1268],[40.0612,0.0477],[40.07,0.1185],[40.2082,0.1781],[40.2614,0.2352],[40.307,0.2397],[40.3969,0.3695],[40.4724,0.4183],[40.5504,0.4219],[40.6897,0.5289],[40.8765,0.7894],[40.9951,0.9069],[41.0322,0.9157],[41.1427,1.194],[41.1505,1.3028],[41.1374,1.3396],[41.1813,1.4343],[41.1824,1.4754],[41.2021,1.5076],[41.267,1.5434],[41.3272,1.6509],[41.3315,1.7104],[41.382,1.739],[41.4177,1.7932],[41.4729,1.9337],[41.4686,1.9752],[41.4466,1.9971],[41.5396,2.1765],[41.5611,2.2688],[41.7116,2.5382],[41.7473,2.6966],[41.7849,2.7493],[41.8099,2.8921],[41.8285,2.9217],[41.8097,3.0392],[41.8415,3.0783],[41.8566,3.0736],[41.8662,3.1366],[41.9282,3.1426],[41.9503,3.1667],[41.9545,3.2078]]},{"from":"Begur","to":"Sa Tuna","km":4.8,"min":12,"coords":[[41.9545,3.2078],[41.9545,3.2091],[41.9552,3.2092],[41.9553,3.209],[41.9555,3.2094],[41.9569,3.2106],[41.9568,3.2112],[41.9572,3.2117],[41.957,3.212],[41.9566,3.212],[41.9563,3.2117],[41.9561,3.2109],[41.9558,3.2106],[41.9552,3.2102],[41.9541,3.2102],[41.9539,3.2107],[41.9543,3.2117],[41.9541,3.213],[41.9536,3.2137],[41.9535,3.2143],[41.953,3.2151],[41.9531,3.2156],[41.9544,3.2162],[41.9549,3.2167],[41.9551,3.2174],[41.9553,3.2175],[41.956,3.2177],[41.9561,3.218],[41.9558,3.2188],[41.956,3.2193],[41.9576,3.2197],[41.9587,3.2195],[41.9589,3.2196],[41.9593,3.2206],[41.959,3.2213],[41.9591,3.2221],[41.9589,3.2222],[41.9578,3.2217],[41.9576,3.2217],[41.9577,3.2219],[41.958,3.222],[41.959,3.2229],[41.9603,3.2235],[41.9608,3.2221],[41.9603,3.2215],[41.9608,3.2208],[41.9608,3.22],[41.9609,3.2195],[41.9612,3.2193],[41.9621,3.2224],[41.9634,3.2241],[41.9643,3.2245],[41.9649,3.2241],[41.9662,3.2256],[41.9662,3.2259],[41.9661,3.2265],[41.9663,3.2272],[41.9657,3.2281],[41.9655,3.2287],[41.9658,3.2293]]},{"from":"Sa Tuna","to":"Aiguablava","km":10.2,"min":19,"coords":[[41.9658,3.2293],[41.9655,3.2285],[41.9663,3.2272],[41.9661,3.2265],[41.9662,3.2257],[41.9649,3.2241],[41.9643,3.2245],[41.9634,3.2241],[41.9621,3.2224],[41.9612,3.2193],[41.9608,3.22],[41.9608,3.2208],[41.9603,3.2215],[41.9608,3.2221],[41.9603,3.2235],[41.959,3.2229],[41.9576,3.2218],[41.9591,3.2221],[41.9593,3.2206],[41.9589,3.2196],[41.9562,3.2194],[41.9558,3.219],[41.956,3.2177],[41.9553,3.2175],[41.9544,3.2162],[41.9531,3.2156],[41.953,3.2151],[41.9541,3.213],[41.9543,3.212],[41.954,3.2104],[41.9552,3.2102],[41.956,3.2107],[41.9564,3.2119],[41.9568,3.212],[41.9573,3.2116],[41.958,3.2093],[41.9571,3.2059],[41.9567,3.2054],[41.9559,3.2055],[41.9555,3.2044],[41.9548,3.2043],[41.9539,3.2046],[41.9536,3.2022],[41.9529,3.2025],[41.9531,3.2033],[41.9527,3.204],[41.9529,3.2051],[41.9524,3.2065],[41.9506,3.2054],[41.9493,3.2053],[41.9484,3.2037],[41.9482,3.2027],[41.9473,3.2022],[41.9461,3.2036],[41.9445,3.202],[41.943,3.2027],[41.9433,3.2039],[41.9432,3.2055],[41.9442,3.2077],[41.9441,3.2114],[41.9447,3.2125],[41.9448,3.2138],[41.944,3.2145],[41.9438,3.2156],[41.9435,3.2153],[41.9442,3.2135],[41.9409,3.2087],[41.9402,3.2094],[41.9386,3.2099],[41.9369,3.21],[41.9362,3.2097],[41.936,3.2107],[41.9355,3.2113],[41.9354,3.2121],[41.9348,3.213],[41.9347,3.2139]]},{"from":"Aiguablava","to":"Calella de Palafrugell","km":9.4,"min":17,"coords":[[41.9347,3.2139],[41.9348,3.2149],[41.9339,3.2149],[41.9301,3.2123],[41.9292,3.2095],[41.9281,3.2104],[41.9272,3.2127],[41.9261,3.2103],[41.9263,3.2087],[41.9251,3.209],[41.9248,3.2072],[41.9238,3.2077],[41.9231,3.2054],[41.9196,3.2069],[41.9182,3.2064],[41.9183,3.2048],[41.9174,3.2062],[41.9154,3.2072],[41.9139,3.2054],[41.913,3.206],[41.9122,3.2054],[41.9112,3.2066],[41.9107,3.2059],[41.9091,3.2061],[41.9089,3.2042],[41.9079,3.2025],[41.9078,3.1981],[41.9087,3.1959],[41.9104,3.1877],[41.9046,3.1877],[41.9009,3.1892],[41.8961,3.1925],[41.8952,3.1907],[41.8928,3.1881],[41.8905,3.1792],[41.8878,3.1808]]},{"from":"Calella de Palafrugell","to":"Cadaqués","km":95.7,"min":101,"coords":[[41.8878,3.1808],[41.8931,3.1887],[41.9112,3.1687],[41.924,3.1702],[41.928,3.1569],[41.9511,3.168],[41.9532,3.1591],[41.9645,3.1508],[41.9868,3.1547],[42.0188,3.1414],[42.0328,3.1247],[42.0425,3.1282],[42.0624,3.0481],[42.092,3.0737],[42.0987,3.07],[42.1167,3.0742],[42.1487,3.0572],[42.1586,3.0441],[42.176,3.0343],[42.1893,3.0414],[42.2061,3.0379],[42.2337,2.9797],[42.2663,2.9884],[42.2751,2.9835],[42.3082,3.0551],[42.3503,3.1015],[42.3526,3.1105],[42.3485,3.1288],[42.3531,3.1399],[42.3656,3.1506],[42.3482,3.1818],[42.3408,3.183],[42.3351,3.2038],[42.3191,3.2111],[42.3125,3.2089],[42.3107,3.2175],[42.3079,3.2138],[42.307,3.2278],[42.2966,3.2363],[42.293,3.2532],[42.2961,3.2566],[42.2887,3.277]]},{"from":"Cadaqués","to":"Cap de Creus","km":8.4,"min":17,"coords":[[42.2887,3.277],[42.2885,3.2775],[42.289,3.2793],[42.2888,3.2809],[42.2899,3.2821],[42.2904,3.2824],[42.2912,3.2813],[42.2914,3.2815],[42.2926,3.2805],[42.2933,3.2811],[42.2945,3.2811],[42.2957,3.2829],[42.2964,3.2831],[42.2976,3.2825],[42.2981,3.2826],[42.2986,3.2833],[42.2993,3.2861],[42.301,3.2849],[42.3026,3.2849],[42.304,3.2843],[42.3053,3.285],[42.3059,3.2845],[42.3061,3.2847],[42.3059,3.2856],[42.3064,3.2865],[42.3075,3.2864],[42.3083,3.285],[42.3087,3.2858],[42.3085,3.2871],[42.3092,3.2878],[42.3101,3.2871],[42.3118,3.2885],[42.3136,3.2879],[42.3163,3.2885],[42.3172,3.2898],[42.3181,3.2898],[42.3182,3.2902],[42.3178,3.2913],[42.3185,3.2932],[42.3194,3.2932],[42.3202,3.2948],[42.3208,3.2951],[42.3213,3.2949],[42.3216,3.2953],[42.3213,3.2975],[42.3203,3.2989],[42.3189,3.3023],[42.3199,3.3081],[42.3196,3.309],[42.3187,3.3097],[42.3188,3.3101],[42.3195,3.3104],[42.3192,3.3132],[42.3185,3.3137],[42.3193,3.3137],[42.3199,3.3143],[42.3215,3.3127],[42.3215,3.3131],[42.3208,3.3185],[42.3202,3.3188],[42.32,3.3195],[42.3193,3.3199]]},{"from":"Cap de Creus","to":"Pals","km":68.6,"min":77,"coords":[[42.3004,3.2887],[42.291,3.2805],[42.2889,3.2704],[42.2929,3.2696],[42.296,3.2566],[42.293,3.2532],[42.2969,3.2354],[42.2913,3.2331],[42.2935,3.2253],[42.2871,3.2221],[42.2916,3.2193],[42.2884,3.2108],[42.2971,3.2015],[42.2959,3.1885],[42.2716,3.15],[42.2725,3.1348],[42.2654,3.1209],[42.2594,3.0906],[42.2482,3.075],[42.22,3.0886],[42.1861,3.081],[42.173,3.0465],[42.1727,3.0329],[42.171,3.0398],[42.1586,3.0441],[42.1492,3.0569],[42.1158,3.0744],[42.0987,3.07],[42.092,3.0737],[42.0623,3.0478],[42.044,3.1267],[42.0336,3.1243],[42.0187,3.1415],[41.9866,3.1546],[41.9691,3.1466]]},{"from":"Pals","to":"Barcelona","km":129.5,"min":104,"coords":[[41.9691,3.1466],[41.9589,3.1481],[41.9444,3.1234],[41.9282,3.1424],[41.913,3.1474],[41.8667,3.1369],[41.8584,3.1218],[41.8609,3.1051],[41.8568,3.0736],[41.8414,3.078],[41.8386,3.0713],[41.8303,3.0695],[41.8158,3.0424],[41.8098,3.0393],[41.8062,3.0266],[41.8089,2.9983],[41.8268,2.971],[41.8311,2.9346],[41.8207,2.9038],[41.81,2.8921],[41.8087,2.8604],[41.7843,2.7785],[41.7868,2.7438],[41.768,2.7349],[41.7477,2.6973],[41.7404,2.6664],[41.742,2.6472],[41.7301,2.6318],[41.7251,2.5845],[41.7114,2.5372],[41.6623,2.4638],[41.6333,2.3994],[41.6233,2.3622],[41.6037,2.3383],[41.5806,2.288],[41.5694,2.2824],[41.5617,2.2694],[41.5562,2.2413],[41.4988,2.1925],[41.4695,2.1774],[41.4603,2.1823],[41.4435,2.2061],[41.4262,2.2148],[41.4094,2.1947],[41.4067,2.1984],[41.3888,2.1723],[41.3856,2.1749]]}];
+
+/* ---------- editorial segment metadata ---------- */
+const SEGMETA = [
+ {road:'AP-7 motorway', elev:'Flat, gentle rises', scenic:2, note:'The workhorse leg — toll-free since 2021'},
+ {road:'Cove lane (GIV-6532)', elev:'−170 m descent', scenic:4, note:'Pines part, cove appears'},
+ {road:'Coastal lanes via Fornells', elev:'Rolling, short climbs', scenic:4, note:'Back up the hill, down the next crack'},
+ {road:'Local roads', elev:'Gentle', scenic:3, note:'Inland shortcut between coves'},
+ {road:'C-31 → Roses → GI-614', elev:'Climbs to ≈200 m pass', scenic:5, note:'The famous hairpin run over the massif'},
+ {road:'Single-lane park road', elev:'+120 m to the cape', scenic:5, note:'Moonscape; count wind-carved rocks'},
+ {road:'GI-614 → C-31 south', elev:'Down the pass, then flat', scenic:4, note:'Same drama, downhill, homeward'},
+ {road:'C-31 → C-32 motorway', elev:'Coastal flats', scenic:3, note:'Sea out the left windows to the city'},
+];
+const STOPS = [
+ {id:'valencia', name:'Valencia', ll:[39.4699,-0.3763]},
+ {id:'begur', name:'Begur', ll:[41.9543,3.2077]},
+ {id:'satuna', name:'Sa Tuna', ll:[41.9648,3.2306]},
+ {id:'aiguablava', name:'Aiguablava', ll:[41.9345,3.2140]},
+ {id:'calella', name:'Calella de Palafrugell', ll:[41.8880,3.1808]},
+ {id:'cadaques', name:'Cadaqués', ll:[42.2888,3.2770]},
+ {id:'capdecreus', name:'Cap de Creus', ll:[42.3190,3.3217]},
+ {id:'pals', name:'Pals', ll:[41.9691,3.1462]},
+ {id:'barcelona', name:'Barcelona', ll:[41.3851,2.1734]},
+];
+const mi = km => { const m = km * 0.621371; return m >= 20 ? Math.round(m) : +m.toFixed(1); };
+const fmtDist = km => `${mi(km)} mi / ${km} km`;
+const fmtTime = m => m >= 60 ? `${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')}` : `${m} min`;
+
+/* ---------- map ---------- */
+let map, driveMarker, segLines = [];
+function initMap(){
+  if (typeof L === 'undefined') { document.getElementById('map').innerHTML = '<p style="padding:30px">Map requires an internet connection.</p>'; return; }
+  map = L.map('map', {scrollWheelZoom:false, zoomSnap:0.25});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution:'&copy; OpenStreetMap contributors &copy; CARTO', maxZoom:18
+  }).addTo(map);
+  const all = [];
+  ROUTES.forEach((r,i)=>{
+    const line = L.polyline(r.coords, {color:'#0a89a1', weight:3.5, opacity:.85});
+    line.addTo(map); segLines.push(line); all.push(...r.coords);
+    line.bindTooltip(`${r.from} → ${r.to} · ${fmtDist(r.km)} · ${fmtTime(r.min)}`, {sticky:true});
+  });
+  STOPS.forEach((s,i)=>{
+    const icon = L.divIcon({className:'', html:`<div class="numicon" style="width:26px;height:26px">${i+1}</div>`, iconSize:[26,26], iconAnchor:[13,13]});
+    L.marker(s.ll, {icon, title:s.name}).addTo(map)
+      .bindPopup(`<b>${s.name}</b><br><a href="#stop-${s.id}">Read the chapter ↓</a><br><a href="https://www.google.com/maps/search/?api=1&query=${s.ll[0]},${s.ll[1]}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>`)
+      .on('click', ()=> setChip(i));
+  });
+  map.fitBounds(L.latLngBounds(all), {padding:[30,30]});
+}
+
+/* ---------- chips + segment cards ---------- */
+const chipsEl = document.getElementById('stopchips');
+STOPS.forEach((s,i)=>{
+  const b = document.createElement('button');
+  b.textContent = `${i+1} · ${s.name.replace(' de Palafrugell','')}`;
+  b.onclick = ()=>{ setChip(i); if(map) map.flyTo(s.ll, i===0||i===8?11:13, {duration:.8}); document.getElementById('stop-'+s.id)?.scrollIntoView({behavior:'smooth'}); };
+  chipsEl.appendChild(b);
+});
+function setChip(i){ [...chipsEl.children].forEach((c,j)=>c.classList.toggle('on', j===i)); }
+
+const segEl = document.getElementById('segcards');
+ROUTES.forEach((r,i)=>{
+  const m = SEGMETA[i];
+  const d = document.createElement('div');
+  d.className = 'seg-card';
+  d.innerHTML = `<div class="r">Leg ${i+1}</div><h4>${r.from} → ${r.to}</h4>
+    <div class="facts">
+      <div>DISTANCE<b>${fmtDist(r.km)}</b></div><div>DRIVE<b>${fmtTime(r.min)}</b></div>
+      <div>ROAD<b style="font-size:13px">${m.road}</b></div><div>ELEVATION<b style="font-size:13px">${m.elev}</b></div>
+    </div>
+    <div style="margin-top:10px;font:12px var(--sans);color:var(--ink2)">${m.note}</div>
+    <div class="scenic" title="Scenic rating ${m.scenic}/5" aria-label="Scenic rating ${m.scenic} out of 5">${'●'.repeat(m.scenic)}${'○'.repeat(5-m.scenic)} <span style="color:var(--ink3);font-family:var(--mono);font-size:11px;letter-spacing:.06em">SCENIC</span></div>`;
+  d.onmouseenter = ()=> segLines[i]?.setStyle({weight:7, color:'#086b7e'});
+  d.onmouseleave = ()=> segLines[i]?.setStyle({weight:3.5, color:'#0a89a1'});
+  segEl.appendChild(d);
+});
+
+/* ---------- drive animation ---------- */
+const HUD = document.getElementById('hud');
+let driving = false, rafId = null;
+document.getElementById('driveBtn').addEventListener('click', function(){
+  if (!map) return;
+  if (driving){ cancelAnimationFrame(rafId); driving = false; this.textContent = '▶ Drive it'; return; }
+  driving = true; this.textContent = '⏸ Pause';
+  const path = [], segAt = [];
+  ROUTES.forEach((r,i)=> r.coords.forEach(c=>{ path.push(c); segAt.push(i); }));
+  if (!driveMarker) driveMarker = L.circleMarker(path[0], {radius:8, color:'#fff', weight:3, fillColor:'#c2701d', fillOpacity:1}).addTo(map);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const total = reduce ? 1 : 40000; // ms for full trip
+  let start = null, lastSeg = -1;
+  // follow-cam: zoom level scaled to each leg's length, eased between legs
+  const segZoom = r => r.km > 200 ? 9 : r.km > 60 ? 10.25 : r.km > 15 ? 11.5 : 13;
+  let camZoom = segZoom(ROUTES[0]);
+  let frame = 0;
+  map.setView(path[0], camZoom);
+  const step = (ts)=>{
+    if (!start) start = ts;
+    const t = Math.min(1, (ts-start)/total);
+    const idx = Math.min(path.length-1, Math.floor(t*(path.length-1)));
+    driveMarker.setLatLng(path[idx]);
+    if (!reduce){
+      camZoom += (segZoom(ROUTES[segAt[idx]]) - camZoom) * 0.05;
+      if (frame++ % 2 === 0) map.setView(path[idx], camZoom, {animate:false});
+    }
+    const si = segAt[idx];
+    if (si !== lastSeg){
+      lastSeg = si; const r = ROUTES[si], m = SEGMETA[si];
+      HUD.className = 'on';
+      HUD.innerHTML = `<span class="seg">${r.from} → ${r.to}</span>
+        <span class="m">DIST <b>${fmtDist(r.km)}</b></span><span class="m">TIME <b>${fmtTime(r.min)}</b></span>
+        <span class="m">ROAD <b>${m.road}</b></span><span class="m">ELEV <b>${m.elev}</b></span>
+        <span class="m">SCENIC <b style="color:var(--sand)">${'●'.repeat(m.scenic)}${'○'.repeat(5-m.scenic)}</b></span>`;
+      setChip(si+1);
+    }
+    if (t < 1 && driving) rafId = requestAnimationFrame(step);
+    else {
+      driving = false; document.getElementById('driveBtn').textContent = '▶ Drive it';
+      if (t >= 1) map.flyToBounds(L.latLngBounds(path), {padding:[30,30], duration:1.2});
+    }
+  };
+  rafId = requestAnimationFrame(step);
+});
+
+/* ---------- beaches ---------- */
+const BEACHES = [
+ {name:'Sa Tuna', gm:'Platja de Sa Tuna Begur', img:'satuna.1', page:'satuna.1', water:'Glass-clear over pebbles — deep green-blue',
+  kids:4, parking:1, shade:2, crowds:3, snorkel:5, food:'Hostal Sa Tuna, on the sand', note:'Water shoes for the pebbles. Best before 11 am; snorkel both rocky points.'},
+ {name:'Aiguablava', gm:"Platja d'Aiguablava Begur", img:'aiguablava.1', page:'aiguablava.1', water:'Bright turquoise over golden sand',
+  kids:5, parking:2, shade:3, crowds:2, snorkel:4, food:'Toc al Mar · beach kiosk', note:'Shallow shelf perfect for the youngest. Lot fills 10:30–15:00.'},
+ {name:'Platja de Fornells', gm:'Platja de Fornells Begur', img:'aiguablava.2', page:'aiguablava.2', water:'Same turquoise, boat-bobbing cove',
+  kids:4, parking:2, shade:2, crowds:3, snorkel:4, food:'Hotel Aigua Blava above', note:'Tiny and quieter — the overflow move when Aiguablava peaks.'},
+ {name:'Canadell (Calella)', gm:'Platja del Canadell Calella de Palafrugell', img:'calella.2', page:'calella.2', water:'Clear blue over sand, boats on the shore',
+  kids:4, parking:2, shade:2, crowds:2, snorkel:3, food:'Tragamar + the whole passeig', note:'The evening beach: swim at 7, dinner at 9 without moving the car.'},
+ {name:'Es Llané (Cadaqués)', gm:'Platja es Llané Cadaqués', img:'cadaques.0', page:'cadaques.0', water:'Deep clear blue off white terraces',
+  kids:3, parking:2, shade:1, crowds:3, snorkel:4, food:'The Riba terraces behind you', note:'The Sunday backup swim in town — pebbly entry, calm water; the cove out at Portlligat is the main event.'},
+ {name:'Aiguafreda', gm:'Cala Aiguafreda Begur', img:'begur.2', page:'begur.2', water:'Deep emerald — a natural swimming hole',
+  kids:3, parking:3, shade:2, crowds:4, snorkel:5, food:'Sa Rascassa, hidden in the green', note:'No sand at all: rock platforms and ladders. Older kids love it most.'},
+];
+const meter = (label,v) => `<span>${label}</span><span class="bar" role="img" aria-label="${label} ${v} out of 5"><i style="width:${v*20}%"></i></span>`;
+document.getElementById('beachcards').innerHTML = BEACHES.map(b=>`
+  <div class="beach">
+    <div class="ph"><figure style="margin:0;height:100%"><img data-src-key="${b.img}" data-page-key="${b.page}" alt="${b.name}" loading="lazy"></figure></div>
+    <div class="bd">
+      <h4><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.gm)}" target="_blank" rel="noopener" style="color:inherit">${b.name} <span style="font-size:12px;color:var(--sea-deep)">⌖</span></a></h4><div class="wc">${b.water}</div>
+      <div class="meter">
+        ${meter('Kid-friendly',b.kids)}${meter('Easy parking',b.parking)}${meter('Shade',b.shade)}${meter('Elbow room',b.crowds)}${meter('Snorkeling',b.snorkel)}
+      </div>
+      <div class="note"><strong>Eat:</strong> ${b.food}<br>${b.note}</div>
+    </div>
+  </div>`).join('');
+
+/* photo key lookup for JS-rendered images */
+const PHOTOKEYS = {"valencia.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/El_Palau_de_les_Arts_Reina_Sof%C3%ADa%2C_Valencia_-_Jan_2007.jpg/1920px-El_Palau_de_les_Arts_Reina_Sof%C3%ADa%2C_Valencia_-_Jan_2007.jpg","page":"https://commons.wikimedia.org/wiki/File:El_Palau_de_les_Arts_Reina_Sofía,_Valencia_-_Jan_2007.jpg"},"valencia.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Ciutat_de_les_Arts_i_les_Ci%C3%A8ncies_01.jpg/1920px-Ciutat_de_les_Arts_i_les_Ci%C3%A8ncies_01.jpg","page":"https://commons.wikimedia.org/wiki/File:Ciutat_de_les_Arts_i_les_Ciències_01.jpg"},"valencia.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/La_Malvarrosa_-_Juanedc.jpg/1920px-La_Malvarrosa_-_Juanedc.jpg","page":"https://commons.wikimedia.org/wiki/File:La_Malvarrosa_-_Juanedc.jpg"},"valencia.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Valencia_-_Mercado_Central_1.jpg/1920px-Valencia_-_Mercado_Central_1.jpg","page":"https://commons.wikimedia.org/wiki/File:Valencia_-_Mercado_Central_1.jpg"},"begur.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Begur-Castillo.jpg/1920px-Begur-Castillo.jpg","page":"https://commons.wikimedia.org/wiki/File:Begur-Castillo.jpg"},"begur.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Begur_from_the_castle.jpg/1920px-Begur_from_the_castle.jpg","page":"https://commons.wikimedia.org/wiki/File:Begur_from_the_castle.jpg"},"begur.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Parador_vist_desde_cami_de_ronda.JPG/1920px-Parador_vist_desde_cami_de_ronda.JPG","page":"https://commons.wikimedia.org/wiki/File:Parador_vist_desde_cami_de_ronda.JPG"},"satuna.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Platja_de_sa_Tuna_2.JPG/1920px-Platja_de_sa_Tuna_2.JPG","page":"https://commons.wikimedia.org/wiki/File:Platja_de_sa_Tuna_2.JPG"},"satuna.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Cala_Sa_Tuna.JPG/1920px-Cala_Sa_Tuna.JPG","page":"https://commons.wikimedia.org/wiki/File:Cala_Sa_Tuna.JPG"},"satuna.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Platja_de_sa_Tuna_1.JPG/1920px-Platja_de_sa_Tuna_1.JPG","page":"https://commons.wikimedia.org/wiki/File:Platja_de_sa_Tuna_1.JPG"},"satuna.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Begur_Sa_Tuna_01_JMM.JPG/1920px-Begur_Sa_Tuna_01_JMM.JPG","page":"https://commons.wikimedia.org/wiki/File:Begur_Sa_Tuna_01_JMM.JPG"},"aiguablava.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Platja_d%27Aiguablava.jpg/1920px-Platja_d%27Aiguablava.jpg","page":"https://commons.wikimedia.org/wiki/File:Platja_d'Aiguablava.jpg"},"aiguablava.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Cala_d%27Aiguablava%2C_Begur.jpg/1920px-Cala_d%27Aiguablava%2C_Begur.jpg","page":"https://commons.wikimedia.org/wiki/File:Cala_d'Aiguablava,_Begur.jpg"},"aiguablava.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Fornells_2022-10-27_15.35.20.jpg/1920px-Fornells_2022-10-27_15.35.20.jpg","page":"https://commons.wikimedia.org/wiki/File:Fornells_2022-10-27_15.35.20.jpg"},"aiguablava.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Platja_d%27Aiguablava%2C_2.jpg/1920px-Platja_d%27Aiguablava%2C_2.jpg","page":"https://commons.wikimedia.org/wiki/File:Platja_d'Aiguablava,_2.jpg"},"calella.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Calella_de_Palafrugell_-_53619347398.jpg/1920px-Calella_de_Palafrugell_-_53619347398.jpg","page":"https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell_-_53619347398.jpg"},"calella.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Calella_de_Palafrugell_-_Placa_Port-Bo.jpg/1920px-Calella_de_Palafrugell_-_Placa_Port-Bo.jpg","page":"https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell_-_Placa_Port-Bo.jpg"},"calella.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Calella_de_Palafrugell-.jpg/1920px-Calella_de_Palafrugell-.jpg","page":"https://commons.wikimedia.org/wiki/File:Calella_de_Palafrugell-.jpg"},"calella.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Cam%C3%AD_de_Ronda_%28Calella_de_Palafrugell%29_2022-10-24_13.28.23.jpg/1920px-Cam%C3%AD_de_Ronda_%28Calella_de_Palafrugell%29_2022-10-24_13.28.23.jpg","page":"https://commons.wikimedia.org/wiki/File:Camí_de_Ronda_(Calella_de_Palafrugell)_2022-10-24_13.28.23.jpg"},"cadaques.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Cadaqu%C3%A9s_BW_2019-10-08_11-08-02.jpg/1920px-Cadaqu%C3%A9s_BW_2019-10-08_11-08-02.jpg","page":"https://commons.wikimedia.org/wiki/File:Cadaqués_BW_2019-10-08_11-08-02.jpg"},"cadaques.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Cadaqu%C3%A9s_BW_2019-10-08_11-14-46.jpg/1920px-Cadaqu%C3%A9s_BW_2019-10-08_11-14-46.jpg","page":"https://commons.wikimedia.org/wiki/File:Cadaqués_BW_2019-10-08_11-14-46.jpg"},"cadaques.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Sant_Maria_Cadaqu%C3%A9s.JPG/1920px-Sant_Maria_Cadaqu%C3%A9s.JPG","page":"https://commons.wikimedia.org/wiki/File:Sant_Maria_Cadaqués.JPG"},"cadaques.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Casa_Salvador_Dal%C3%AD_de_Portlligat_%28Cadaqu%C3%A9s%29_-_1.jpg/1920px-Casa_Salvador_Dal%C3%AD_de_Portlligat_%28Cadaqu%C3%A9s%29_-_1.jpg","page":"https://commons.wikimedia.org/wiki/File:Casa_Salvador_Dalí_de_Portlligat_(Cadaqués)_-_1.jpg"},"capdecreus.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Cap_de_Creus%2C_Catalonia.jpg/1920px-Cap_de_Creus%2C_Catalonia.jpg","page":"https://commons.wikimedia.org/wiki/File:Cap_de_Creus,_Catalonia.jpg"},"capdecreus.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Far_del_cap_de_creus_-_panoramio.jpg/1920px-Far_del_cap_de_creus_-_panoramio.jpg","page":"https://commons.wikimedia.org/wiki/File:Far_del_cap_de_creus_-_panoramio.jpg"},"capdecreus.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Far_de_Cap_de_Creus_%28agost_2007%29_-_panoramio.jpg/1920px-Far_de_Cap_de_Creus_%28agost_2007%29_-_panoramio.jpg","page":"https://commons.wikimedia.org/wiki/File:Far_de_Cap_de_Creus_(agost_2007)_-_panoramio.jpg"},"capdecreus.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/From_Cap_de_Creus%2C_direction_to_Cadaqu%C3%A9s.jpg/1920px-From_Cap_de_Creus%2C_direction_to_Cadaqu%C3%A9s.jpg","page":"https://commons.wikimedia.org/wiki/File:From_Cap_de_Creus,_direction_to_Cadaqués.jpg"},"capdecreus.4":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Evening_at_Cap_de_Creus_01_ms.jpg/1920px-Evening_at_Cap_de_Creus_01_ms.jpg","page":"https://commons.wikimedia.org/wiki/File:Evening_at_Cap_de_Creus_01_ms.jpg"},"pals.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Castell_de_Pals_-_1.jpg/1920px-Castell_de_Pals_-_1.jpg","page":"https://commons.wikimedia.org/wiki/File:Castell_de_Pals_-_1.jpg"},"pals.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/%F0%9F%87%AA%F0%9F%87%B8_%F0%9F%87%AA%F0%9F%87%BA_Pals_%28Catalu%C3%B1a%2C_Espa%C3%B1a%2C_9-6-2024%29_%2854116249884%29.jpg/1920px-%F0%9F%87%AA%F0%9F%87%B8_%F0%9F%87%AA%F0%9F%87%BA_Pals_%28Catalu%C3%B1a%2C_Espa%C3%B1a%2C_9-6-2024%29_%2854116249884%29.jpg","page":"https://commons.wikimedia.org/wiki/File:🇪🇸_🇪🇺_Pals_(Cataluña,_España,_9-6-2024)_(54116249884).jpg"},"pals.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/04_La_torre_de_les_Hores%2C_des_del_cam%C3%AD_Fondo_%28Pals%29.jpg/1920px-04_La_torre_de_les_Hores%2C_des_del_cam%C3%AD_Fondo_%28Pals%29.jpg","page":"https://commons.wikimedia.org/wiki/File:04_La_torre_de_les_Hores,_des_del_camí_Fondo_(Pals).jpg"},"pals.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/3/39/Pals_-_004.jpg","page":"https://commons.wikimedia.org/wiki/File:Pals_-_004.jpg"},"barcelona.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Aerial_View_of_Barcelona_While_Landing.jpg/1920px-Aerial_View_of_Barcelona_While_Landing.jpg","page":"https://commons.wikimedia.org/wiki/File:Aerial_View_of_Barcelona_While_Landing.jpg"},"barcelona.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Sagrada_Fam%C3%ADlia_2010.JPG/1920px-Sagrada_Fam%C3%ADlia_2010.JPG","page":"https://commons.wikimedia.org/wiki/File:Sagrada_Família_2010.JPG"},"barcelona.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Barcelona_parc_G%C3%BCell_la_placa_2013_04.jpg/1920px-Barcelona_parc_G%C3%BCell_la_placa_2013_04.jpg","page":"https://commons.wikimedia.org/wiki/File:Barcelona_parc_Güell_la_placa_2013_04.jpg"},"barcelona.3":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Barcelona_Parc_G%C3%BCell_el_drac.jpg/1920px-Barcelona_Parc_G%C3%BCell_el_drac.jpg","page":"https://commons.wikimedia.org/wiki/File:Barcelona_Parc_Güell_el_drac.jpg"},"mallorca.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cala_Mondrag%C3%B3_02.jpg/1920px-Cala_Mondrag%C3%B3_02.jpg","page":"https://commons.wikimedia.org/wiki/File:Cala_Mondragó_02.jpg"},"mallorca.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Palma_Cathedral_%28La_Seu%29_and_reflection_at_Parc_de_la_Mar.jpg/1920px-Palma_Cathedral_%28La_Seu%29_and_reflection_at_Parc_de_la_Mar.jpg","page":"https://commons.wikimedia.org/wiki/File:Palma_Cathedral_(La_Seu)_and_reflection_at_Parc_de_la_Mar.jpg"},"mallorca.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Serra_de_Tramuntana_%282016.05.17%29.jpg/1920px-Serra_de_Tramuntana_%282016.05.17%29.jpg","page":"https://commons.wikimedia.org/wiki/File:Serra_de_Tramuntana_(2016.05.17).jpg"},"roadtrip.0":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Vista_panor%C3%A1mica_de_Pe%C3%B1%C3%ADscola_desde_el_castillo.jpg/1920px-Vista_panor%C3%A1mica_de_Pe%C3%B1%C3%ADscola_desde_el_castillo.jpg","page":"https://commons.wikimedia.org/wiki/File:Vista_panorámica_de_Peñíscola_desde_el_castillo.jpg"},"roadtrip.1":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/AP_7_bei_D%C3%A9nia_-_52530419943.jpg/1920px-AP_7_bei_D%C3%A9nia_-_52530419943.jpg","page":"https://commons.wikimedia.org/wiki/File:AP_7_bei_Dénia_-_52530419943.jpg"},"roadtrip.2":{"url":"https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Beach%2C_Sitges.jpg/1920px-Beach%2C_Sitges.jpg","page":"https://commons.wikimedia.org/wiki/File:Beach,_Sitges.jpg"}};
+document.querySelectorAll('[data-src-key]').forEach(img=>{
+  const k = img.getAttribute('data-src-key'), p = PHOTOKEYS[k];
+  if (p){ img.src = p.url; img.setAttribute('data-page', PHOTOKEYS[img.getAttribute('data-page-key')].page); }
+});
+
+/* ---------- radar ---------- */
+(function(){
+  const AXES = ['Beauty','Water color','Fewer crowds','Driving fun','No flights','Cost','Low stress','Logistics','Time on trip','Family fit','Restaurants','Overall'];
+  const CB  = [5,5,3.5,5,5,4,4.5,4.5,4.5,4.5,5,5];
+  const MAL = [4.5,5,2,3.5,1.5,2.5,2.5,2,2.5,4,4,3.5];
+  const C = 320, R = 214, cx = C, cy = C;
+  const pt = (i,v)=>{ const a = -Math.PI/2 + i*2*Math.PI/AXES.length; const r = R*v/5; return [cx + r*Math.cos(a), cy + r*Math.sin(a)]; };
+  let g = '';
+  for (let ring=1; ring<=5; ring++){
+    const pts = AXES.map((_,i)=>pt(i,ring).join(',')).join(' ');
+    g += `<polygon points="${pts}" fill="none" stroke="#24363e" stroke-width="1"/>`;
+  }
+  AXES.forEach((ax,i)=>{
+    const [x,y] = pt(i,5);
+    g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#24363e" stroke-width="1"/>`;
+    const [lx,ly] = pt(i,5.85);
+    const anchor = Math.abs(lx-cx)<12 ? 'middle' : (lx>cx ? 'start' : 'end');
+    g += `<text x="${lx}" y="${ly}" fill="#8fa3ab" font-size="13.5" font-family="-apple-system,sans-serif" font-weight="600" text-anchor="${anchor}" dominant-baseline="middle">${ax}</text>`;
+  });
+  const poly = (vals,color,fill)=>{
+    const pts = vals.map((v,i)=>pt(i,v).join(',')).join(' ');
+    return `<polygon points="${pts}" fill="${fill}" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>` +
+      vals.map((v,i)=>{ const [x,y]=pt(i,v); return `<circle cx="${x}" cy="${y}" r="4" fill="${color}" stroke="#0e1c22" stroke-width="2"/>`; }).join('');
+  };
+  document.getElementById('radar').innerHTML =
+    `<svg viewBox="-64 -8 ${C*2+128} ${C*2+16}">${g}${poly(MAL,'#e0a24a','rgba(224,162,74,.16)')}${poly(CB,'#39c1dc','rgba(57,193,220,.20)')}</svg>`;
+})();
+
+/* ---------- reveal ---------- */
+/* ---------- itinerary view toggle ---------- */
+(function(){
+  const btns = document.querySelectorAll('.itintoggle button');
+  const simple = document.getElementById('itin-simple');
+  const days = document.querySelectorAll('#itinerary .day');
+  const set = v => {
+    btns.forEach(b => b.classList.toggle('on', b.dataset.itin === v));
+    simple.style.display = v === 'simple' ? '' : 'none';
+    days.forEach(d => { d.style.display = v === 'full' ? '' : 'none'; if (v === 'full') d.classList.add('in'); });
+  };
+  btns.forEach(b => b.addEventListener('click', () => set(b.dataset.itin)));
+  set('simple');
+})();
+
+/* ---------- chapter mini locator maps (real OSM tiles) ---------- */
+function initMiniMaps(){
+  if (typeof L === 'undefined') { document.querySelectorAll('.minimap').forEach(m => m.style.display = 'none'); return; }
+  const ZOOMS = { valencia: 9, barcelona: 9, cadaques: 10.5, capdecreus: 10.5 };
+  document.querySelectorAll('.minimap[data-stop]').forEach(box => {
+    const me = STOPS.find(st => st.id === box.dataset.stop);
+    if (!me) return;
+    const m = L.map(box, {zoomControl:false, dragging:false, scrollWheelZoom:false, touchZoom:false,
+      doubleClickZoom:false, boxZoom:false, keyboard:false, attributionControl:false, zoomSnap:0.5});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {maxZoom:18}).addTo(m);
+    ROUTES.forEach(r => L.polyline(r.coords, {color:'#0a89a1', weight:2.5, opacity:.65}).addTo(m));
+    STOPS.forEach(st => { if (st !== me) L.circleMarker(st.ll, {radius:4, color:'#fff', weight:1.5, fillColor:'#6d8f9a', fillOpacity:1}).addTo(m); });
+    L.circleMarker(me.ll, {radius:7, color:'#fff', weight:2.5, fillColor:'#c2701d', fillOpacity:1}).addTo(m)
+      .bindTooltip(me.name.replace(' de Palafrugell',''), {permanent:true, direction:'top', offset:[0,-8], className:'mmtip'}).openTooltip();
+    m.setView(me.ll, ZOOMS[me.id] ?? 10.5);
+    setTimeout(() => m.invalidateSize(), 600);
+  });
+}
+initMiniMaps();
+
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* ---------- spine ---------- */
+(function(){
+  const spine = document.getElementById('spine'), track = spine.querySelector('.track');
+  STOPS.forEach((s,i)=>{
+    const a = document.createElement('a');
+    a.href = '#stop-'+s.id; a.style.top = (i/(STOPS.length-1)*100)+'%';
+    a.innerHTML = `<span class="tip">${i+1} · ${s.name}</span>`;
+    track.appendChild(a);
+  });
+  const dots = [...track.querySelectorAll('a')];
+  addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const p = h.scrollTop/(h.scrollHeight-h.clientHeight);
+    document.getElementById('spinefill').style.height = (p*100)+'%';
+    let active = 0;
+    STOPS.forEach((s,i)=>{
+      const el = document.getElementById('stop-'+s.id);
+      if (el && el.getBoundingClientRect().top < innerHeight*.5) active = i;
+    });
+    dots.forEach((d,i)=>d.classList.toggle('on', i===active));
+  }, {passive:true});
+})();
+
+/* ---------- lightbox ---------- */
+/* ---------- app bar scroll spy ---------- */
+(function(){
+  const tabs = [...document.querySelectorAll('#appbar a')];
+  if (!tabs.length) return;
+  const zones = ['verdict','food','stops','itinerary','route'].map(id => [id, document.getElementById(id)]);
+  let tick = false;
+  const spy = () => {
+    tick = false;
+    const y = innerHeight * 0.4;
+    let active = 'route';
+    for (const [id, el] of zones) { if (el && el.getBoundingClientRect().top < y) { active = id; break; } }
+    tabs.forEach(t => t.classList.toggle('on', t.dataset.spy === active));
+  };
+  addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(spy); } }, {passive:true});
+  spy();
+})();
+
+const lb = document.getElementById('lb'), lbImg = lb.querySelector('img'), lbCap = lb.querySelector('.cap');
+document.addEventListener('click', e=>{
+  const img = e.target.closest('.gal img, .beach .ph img, .ch-hero img');
+  if (!img) return;
+  lbImg.src = img.src; lbImg.alt = img.alt;
+  const page = img.getAttribute('data-page') || img.closest('figure,.ch-hero')?.querySelector('a')?.href || '';
+  lbCap.innerHTML = `${img.alt}${page?` — <a href="${page}" target="_blank" rel="noopener">source ↗</a>`:''}`;
+  lb.classList.add('on'); document.body.style.overflow = 'hidden';
+});
+const closeLb = ()=>{ lb.classList.remove('on'); document.body.style.overflow = ''; lbImg.src=''; };
+document.getElementById('lbclose').onclick = closeLb;
+lb.addEventListener('click', e=>{ if (e.target === lb) closeLb(); });
+addEventListener('keydown', e=>{ if (e.key === 'Escape') closeLb(); });
+
+/* image graceful fallback */
+document.querySelectorAll('img').forEach(img=>{
+  img.addEventListener('error', ()=>{
+    const f = img.closest('figure, .ph, .bg');
+    if (f){ f.style.background = 'linear-gradient(135deg,#cfe8ec,#eef4f5)'; img.style.display = 'none'; }
+  });
+});
+
+initMap();
+</script>
+</body>
+</html>
